@@ -1,111 +1,115 @@
 {% load static %}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}IOTA Training{% endblock %}</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
 
     <!-- Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
 
     <!-- Styles -->
-    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'css/style.css' %}" rel="stylesheet" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
-</head>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{% static 'images/favicon.ico' %}"
+    />
+  </head>
 
-<body class="iota-body bg-white">
+  <body class="iota-body bg-white">
+
+    <!-- ================================================= -->
+    <!--                    TOP LOGO                       -->
+    <!-- ================================================= -->
+    <header class="iota-topbar">
+      <div class="container-fluid">
+        <div class="iota-logo-container text-center">
+          <img
+            src="{% static 'images/5a1f46e2429382896ede9fe2dfd980e0.png' %}"
+            alt="IOTA Logo"
+            class="iota-logo"
+          />
+        </div>
+      </div>
+    </header>
 
     <!-- ================================================= -->
     <!--                     NAVBAR                        -->
     <!-- ================================================= -->
     <nav class="navbar navbar-expand-lg iota-navbar shadow-sm position-relative">
+      <div class="container-fluid d-flex align-items-center justify-content-between">
 
-        <div class="container-fluid d-flex align-items-center justify-content-between">
-
-            <!-- LEFT SIDE (WELCOME TEXT) -->
-            <div class="d-flex align-items-center">
-                {% if user.is_authenticated %}
-                    <span class="iota-nav-user">
-                        Welcome, {{ user.first_name|default:user.username }}
-                    </span>
-                {% else %}
-                    <span class="iota-nav-user">
-                        Please log in
-                    </span>
-                {% endif %}
-            </div>
-
-            <!-- RIGHT SIDE -->
-            <div class="d-flex align-items-center">
-
-                <!-- Login/Logout -->
-                <div class="me-3">
-                    {% if user.is_authenticated %}
-                    <a class="nav-link iota-nav-link" href="{% url 'account_logout' %}">
-                        <i class="fa-solid fa-right-from-bracket"></i> Logout
-                    </a>
-                    {% else %}
-                    <a class="nav-link iota-nav-link" href="{% url 'account_login' %}">
-                        <i class="fa-solid fa-right-to-bracket"></i> Login
-                    </a>
-                    {% endif %}
-                </div>
-
-                <!-- MENU BUTTON -->
-                <button class="iota-menu-btn"
-                        type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#iotaMenu"
-                        aria-controls="iotaMenu">
-                    <i class="fa-solid fa-bars-staggered"></i>
-                </button>
-
-            </div>
-
+        <!-- LEFT SIDE (WELCOME TEXT) -->
+        <div class="d-flex align-items-center">
+          {% if user.is_authenticated %}
+          <span class="iota-nav-user">
+            Welcome, {{ user.first_name|default:user.username }}
+          </span>
+          {% else %}
+          <span class="iota-nav-user"> Please log in </span>
+          {% endif %}
         </div>
+
+        <!-- RIGHT SIDE -->
+        <div class="d-flex align-items-center">
+          <!-- Login/Logout -->
+          <div class="me-3">
+            {% if user.is_authenticated %}
+            <a class="nav-link iota-nav-link" href="{% url 'account_logout' %}">
+              <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+            {% else %}
+            <a class="nav-link iota-nav-link" href="{% url 'account_login' %}">
+              <i class="fa-solid fa-right-to-bracket"></i> Login
+            </a>
+            {% endif %}
+          </div>
+
+          <!-- MENU BUTTON -->
+          <button
+            class="iota-menu-btn"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#iotaMenu"
+            aria-controls="iotaMenu"
+          >
+            <i class="fa-solid fa-bars-staggered"></i>
+          </button>
+        </div>
+      </div>
     </nav>
 
     <!-- ================================================= -->
-    <!--                    LOGO BELOW NAV                 -->
+    <!--                    PAGE CONTENT                   -->
     <!-- ================================================= -->
-    <div class="iota-logo-container text-center">
-        <img src="{% static 'images/5a1f46e2429382896ede9fe2dfd980e0.png' %}"
-             alt="IOTA Logo"
-             class="iota-logo">
-    </div>
-
-    <!-- ================================================= -->
-    <!--                    PAGE WRAPPER                   -->
-    <!-- ================================================= -->
-    <div class="iota-wrapper">
-        <div class="iota-content-container">
-            <div class="iota-glass-card shadow-lg">
-
-                {% block iota_content %}
-                {% block content %}{% endblock %}
-                {% endblock %}
-
-            </div>
-        </div>
-    </div>
+    <main>
+      {% block iota_content %}
+        {% block content %}{% endblock %}
+      {% endblock %}
+    </main>
 
     <!-- ================================================= -->
     <!--                   OFFCANVAS MENU                  -->
     <!-- ================================================= -->
     <div class="offcanvas offcanvas-end iota-offcanvas" tabindex="-1" id="iotaMenu">
-        {% include 'iota/offcanvas.html' %}
+      {% include 'iota/offcanvas.html' %}
     </div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
-
-</body>
+  </body>
 </html>
