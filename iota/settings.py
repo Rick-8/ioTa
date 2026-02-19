@@ -9,6 +9,11 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+# Load env vars (SECRET_KEY, DB settings, etc.)
+if os.path.exists("env.py"):
+    import env  # noqa
 
 # Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -17,9 +22,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -----------------------------------------------------------
 # BASIC SETTINGS
 # -----------------------------------------------------------
-
-SECRET_KEY = "django-insecure-g3hr%m1jbk$e@-f5cqhtntg5f&%p-)iyx)08fpzwffvtg-e7v4"
-DEBUG = True
+SECRET_KEY = os.environ.get("SECRET_KEY")
+DEBUG = os.environ.get("DEVELOPMENT", "False") == "True"
 ALLOWED_HOSTS = []
 
 

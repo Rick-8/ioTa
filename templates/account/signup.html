@@ -4,47 +4,58 @@
 {% block title %}Create Account | IOTA{% endblock %}
 
 {% block iota_content %}
+<section class="iota-auth iota-auth--tight">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-7 col-lg-5">
 
-<div class="text-center mb-4">
-    <h1 class="iota-header">Create Your IOTA Account</h1>
-    <p class="text-light">Register to access courses, certification and training tools.</p>
-</div>
+        <div class="iota-auth-card">
+          <div class="text-center mb-4">
+            <h1 class="iota-auth-title">Create Your IOTA Account</h1>
+            <p class="iota-auth-subtitle">Register to access courses, certification and training tools.</p>
+          </div>
 
-<form method="POST" action="{% url 'account_signup' %}">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
+          <form method="POST" action="{% url 'account_signup' %}" class="iota-auth-form">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
 
-    <div class="mb-3">
-        <label class="form-label text-light">Username</label>
-        <input type="text" name="{{ form.username.name }}" class="form-control iota-input"
-               value="{{ form.username.value|default:'' }}">
+            <div class="mb-3">
+              <label class="form-label iota-label">Username</label>
+              <input type="text" name="{{ form.username.name }}" class="form-control iota-input"
+                     value="{{ form.username.value|default:'' }}" autocomplete="username" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label iota-label">Email</label>
+              <input type="email" name="{{ form.email.name }}" class="form-control iota-input"
+                     value="{{ form.email.value|default:'' }}" autocomplete="email" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label iota-label">Password</label>
+              <input type="password" name="{{ form.password1.name }}" class="form-control iota-input"
+                     autocomplete="new-password" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label iota-label">Confirm Password</label>
+              <input type="password" name="{{ form.password2.name }}" class="form-control iota-input"
+                     autocomplete="new-password" required>
+            </div>
+
+            <button type="submit" class="btn iota-btn w-100 py-2 mt-2">
+              <i class="fa-solid fa-user-plus me-2"></i> Create Account
+            </button>
+
+            <div class="text-center mt-4 iota-auth-footer">
+              <span>Already have an account?</span>
+              <a href="{% url 'account_login' %}" class="iota-auth-link fw-bold ms-1">Login here</a>
+            </div>
+          </form>
+        </div>
+
+      </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label text-light">Email</label>
-        <input type="email" name="{{ form.email.name }}" class="form-control iota-input"
-               value="{{ form.email.value|default:'' }}">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label text-light">Password</label>
-        <input type="password" name="{{ form.password1.name }}" class="form-control iota-input">
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label text-light">Confirm Password</label>
-        <input type="password" name="{{ form.password2.name }}" class="form-control iota-input">
-    </div>
-
-    <button type="submit" class="iota-btn w-100 py-2 mt-3">
-        <i class="fa-solid fa-user-plus me-2"></i> Create Account
-    </button>
-
-    <div class="text-center mt-3">
-        <span class="text-light">Already have an account?</span>
-        <a href="{% url 'account_login' %}" class="text-light fw-bold">Login here</a>
-    </div>
-
-</form>
-
+  </div>
+</section>
 {% endblock %}

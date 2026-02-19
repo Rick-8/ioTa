@@ -6,60 +6,64 @@
 {% block iota_content %}
 
 <section class="iota-hero">
+  <div class="iota-hero__bg"
+       style="background-image: url('{% static "images/iota-background-2.png" %}');">
+  </div>
+  <div class="iota-hero__overlay"></div>
 
-  <!-- Background image -->
-  <div class="iota-hero__bg" style="background-image: url('{% static "images/iota-background.png" %}');"></div>
-
-  <!-- Glass overlay -->
-  <div class="iota-hero__glass"></div>
-
-  <!-- Content -->
-  <div class="iota-hero__content">
-    <div class="iota-hero__inner">
-
-      <h1 class="iota-header mb-3" style="font-size: clamp(1.8rem, 4vw, 3rem);">
-        Welcome to the IOTA Training Portal
-      </h1>
-
-      <p class="lead mx-auto"
-         style="color: var(--iota-silver); max-width: 700px; font-size: clamp(1rem, 2vw, 1.3rem);">
+  <div class="container iota-hero__content">
+    <div class="iota-hero__card">
+      <h1 class="iota-h1">Welcome to IOTA </h1>
+      <p class="iota-lead">
         Access structured learning, professional development, and certified digital training.
       </p>
 
-      <div class="mt-4 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
-
+      <div class="d-flex flex-wrap gap-2 mt-3">
         {% if user.is_authenticated %}
-          <a href="{% url 'academy_dashboard' %}"
-             class="iota-btn btn-lg rounded-pill px-4 py-2 shadow-sm"
-             style="font-size: clamp(1rem, 1.5vw, 1.2rem);">
-            <i class="fa-solid fa-graduation-cap me-2"></i>
-            View My Courses
-          </a>
+          <a href="#" class="btn iota-btn">Go to Dashboard</a>
         {% else %}
-          <a href="{% url 'account_login' %}"
-             class="iota-btn btn-lg rounded-pill px-4 py-2 shadow-sm"
-             style="font-size: clamp(1rem, 1.5vw, 1.2rem);">
-            <i class="fa-solid fa-right-to-bracket me-2"></i>
-            Log In to Start Learning
-          </a>
+          <a href="{% url 'account_login' %}" class="btn iota-btn">Sign In</a>
         {% endif %}
-
-        {% if user.is_superuser %}
-          <a href="{% url 'academy_manager_dashboard' %}"
-             class="btn btn-outline-light btn-lg rounded-pill px-4 py-2 shadow-sm"
-             style="font-size: clamp(1rem, 1.5vw, 1.2rem);
-                    border-color: var(--iota-silver);
-                    color: var(--iota-silver);">
-            <i class="fa-solid fa-toolbox me-2"></i>
-            Manager Tools
-          </a>
-        {% endif %}
-
+        <a href="#" class="btn iota-btn iota-btn--ghost">Explore Courses</a>
       </div>
+    </div>
 
+    <div class="iota-hero__chips">
+      <div class="iota-chip"><i class="fa-solid fa-certificate"></i> Certified learning</div>
+      <div class="iota-chip"><i class="fa-solid fa-shield-halved"></i> Compliance focused</div>
+      <div class="iota-chip"><i class="fa-solid fa-chart-line"></i> Track progress</div>
     </div>
   </div>
+</section>
 
+<section class="iota-section">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="iota-card">
+          <div class="iota-card__icon"><i class="fa-solid fa-graduation-cap"></i></div>
+          <h3 class="iota-h3">Structured Modules</h3>
+          <p class="iota-text">Clean course paths, bite-sized lessons, and clear outcomes.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="iota-card">
+          <div class="iota-card__icon"><i class="fa-solid fa-clipboard-check"></i></div>
+          <h3 class="iota-h3">Assessments</h3>
+          <p class="iota-text">Quizzes and evidence-based learning that supports real standards.</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="iota-card">
+          <div class="iota-card__icon"><i class="fa-solid fa-people-group"></i></div>
+          <h3 class="iota-h3">Professional Growth</h3>
+          <p class="iota-text">Develop staff capability and keep training records organised.</p>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 {% endblock %}

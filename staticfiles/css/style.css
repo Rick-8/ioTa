@@ -1,225 +1,728 @@
 /* =========================================================
-   IOTA Global Style Sheet
-   Sleek, modern, fully responsive, non-overlapping
+   IOTA Global Style Sheet (Full)
+   - Solid line at top of navbar
+   - Borderless deep blue glass navbar
+   - Large logo with white outline, absolute overlap
+   - Hero image sits under navbar
    ========================================================= */
 
-/* ------------------------------ */
-/*        ROOT VARIABLES          */
-/* ------------------------------ */
-:root {
-    --iota-blue: #1a6fb3;
-    --iota-blue-dark: #0f4a73;
-    --iota-gunmetal: #2b2b2e;
-    --iota-silver: #d7d7d9;
-    --iota-white: #ffffff;
+:root{
+  --iota-blue-line: #0a66ff;
+  --iota-glass: rgba(0, 24, 60, 0.72);
+
+  --iota-text: rgba(255,255,255,0.92);
+  --iota-text-soft: rgba(255,255,255,0.78);
+
+  --iota-page-bg: #f4f6f9;
+
+  --iota-radius-xl: 26px;
+  --iota-radius-lg: 20px;
+  --iota-radius-md: 16px;
+
+  --iota-shadow-lg: 0 18px 45px rgba(0,0,0,0.22);
+  --iota-shadow-md: 0 14px 30px rgba(0,0,0,0.12);
+
+  --iota-blur: 18px;
+
+  /* Sizing knobs */
+  --navline-h: 6px;
+  --navbar-h: 72px;
+
+  /* Logo */
+  --logo-h: 120px;              /* bigger logo */
+  --logo-top: 34px;             /* how high it sits in header */
+  --hero-top-pad: 150px;         /* pushes hero text down so logo never overlaps it */
 }
 
-/* ------------------------------ */
-/*             BODY               */
-/* ------------------------------ */
-.iota-body {
-    background: #f4f6f9;
-    font-family: 'Roboto', sans-serif;
-    overflow-x: hidden;
+/* BODY */
+.iota-body{
+  background: var(--iota-page-bg);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
 /* =========================================================
-   NAVBAR
+   HEADER + NAV
    ========================================================= */
 
-.iota-navbar {
-    background: #ffffff;
-    padding: 12px 0;
-    position: relative;
-    border-bottom: none;
-    z-index: 3000;
+.iota-header{
+  position: sticky;
+  top: 0;
+  z-index: 5000;
 }
 
-/* Metallic gradient strip */
-.iota-navbar::after {
-    content: "";
-    position: absolute;
-    bottom: -12px;
-    left: 0;
-    width: 100%;
-    height: 12px;
-    background: linear-gradient(
-        to bottom,
-        var(--iota-blue),
-        var(--iota-blue-dark),
-        var(--iota-gunmetal)
-    );
-    z-index: 1;
+/* Top solid line */
+.iota-navline{
+  height: var(--navline-h);
+  background: linear-gradient(90deg, var(--iota-blue-line), #2aa7ff, var(--iota-blue-line));
 }
 
-/* WELCOME TEXT */
-.iota-nav-user {
-    font-size: 1.15rem;
-    font-weight: 600;
-    color: #222;
-    z-index: 5000;
+/* Glass navbar, borderless */
+.iota-navbar{
+  background: var(--iota-glass);
+  backdrop-filter: blur(var(--iota-blur));
+  -webkit-backdrop-filter: blur(var(--iota-blur));
+  border: none !important;
+  box-shadow: none !important;
+  min-height: var(--navbar-h);
 }
 
-/* NAV LINKS */
-.iota-nav-link {
-    color: #333 !important;
-    font-weight: 500;
+.iota-navbar .container-fluid{
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
-.iota-nav-link:hover {
-    color: var(--iota-blue-dark) !important;
+/* Welcome text */
+.iota-nav-user{
+  color: var(--iota-text-soft);
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+/* Nav links */
+.iota-nav-link{
+  color: var(--iota-text) !important;
+  font-weight: 900;
+  letter-spacing: 0.2px;
+  padding: 10px 12px !important;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+.iota-nav-link:hover{
+  background: rgba(255,255,255,0.10);
+  color: #ffffff !important;
+}
+
+/* Navbar toggler for dark glass */
+.iota-toggler{
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  border-radius: 14px;
+  padding: 8px 10px;
+}
+.navbar-toggler-icon{
+  filter: invert(1);
+}
+
+/* Optional menu button */
+.iota-menu-btn{
+  width: 44px;
+  height: 42px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: transform .15s ease, background .15s ease;
+}
+.iota-menu-btn:hover{
+  transform: translateY(-1px);
+  background: rgba(255,255,255,0.16);
+}
+.iota-menu-btn i{
+  font-size: 1.25rem;
 }
 
 /* =========================================================
-   LOGO BELOW THE NAVBAR (BIG + CENTERED)
+   FLOATING LOGO (absolute overlap)
    ========================================================= */
 
-.iota-logo-container {
-    margin-top: 5px;
-    margin-bottom: 20px;
+.iota-logo-floating{
+  position: absolute;
+  left: 50%;
+  top: var(--logo-top);
+  transform: translateX(-50%);
+  z-index: 6000;
+  pointer-events: none;
 }
 
-.iota-logo {
-    height: 180px;
-    max-width: 100%;
-    display: block;
-    margin-left: 20px;      /* move logo to the left */
-    margin-right: 0;
-}
+.iota-logo{
+  height: var(--logo-h);
+  width: auto;
+  display: block;
 
-/* Tablet scaling */
-@media (max-width: 992px) {
-    .iota-logo {
-        height: 140px;
-    }
-}
-
-/* Mobile scaling */
-@media (max-width: 576px) {
-    .iota-logo {
-        height: 110px;
-    }
+  /* White outline + depth */
+  filter:
+    drop-shadow(0 0 3px rgba(255,255,255,0.95))
+    drop-shadow(0 0 7px rgba(255,255,255,0.70))
+    drop-shadow(0 14px 26px rgba(0,0,0,0.35));
 }
 
 /* =========================================================
-   MENU BUTTON (ALWAYS VISIBLE)
+   MAIN
    ========================================================= */
 
-.iota-menu-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 10000;
-}
-
-.iota-menu-btn i {
-    font-size: 2.4rem;
-    color: var(--iota-blue-dark);
+.iota-main{
+  /* no padding-top here, because hero is designed to sit behind header */
 }
 
 /* =========================================================
-   PAGE WRAPPER + GLASS CARD
-   ========================================================= */
-
-.iota-wrapper {
-    padding: 40px 0;
-}
-
-.iota-content-container {
-    max-width: 1100px;
-    margin: 0 auto;
-}
-
-.iota-glass-card {
-    background: rgba(255, 255, 255, 0.78);
-    border-radius: 20px;
-    backdrop-filter: blur(12px);
-    padding: 32px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-/* =========================================================
-   OFFCANVAS MENU
-   ========================================================= */
-
-.iota-offcanvas {
-    background: #e9eef4;
-    width: 280px;
-    padding-top: 20px;
-    z-index: 20000 !important;
-}
-
-.iota-offcanvas .nav-link {
-    font-weight: 600;
-    padding: 10px 18px;
-    color: #222;
-}
-
-.iota-offcanvas .nav-link:hover {
-    background: var(--iota-blue);
-    color: #fff !important;
-    border-radius: 6px;
-}
-
-/* =========================================================
-   BUTTONS
-   ========================================================= */
-
-.iota-btn {
-    background: linear-gradient(135deg, var(--iota-blue), var(--iota-blue-dark));
-    color: white !important;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 30px;
-    transition: 0.25s ease-in-out;
-}
-
-.iota-btn:hover {
-    background: linear-gradient(135deg, var(--iota-blue-dark), var(--iota-gunmetal));
-    transform: translateY(-2px);
-}
-
-/* =========================================================
-   page styling
+   HERO
    ========================================================= */
 
 .iota-hero{
   position: relative;
-  min-height: 100vh;
-  width: 100%;
+  min-height: clamp(560px, 75vh, 820px);
+  display: grid;
+  align-items: center;
   overflow: hidden;
+
+  /* This makes the image sit behind the sticky header */
+  margin-top: calc(-1 * (var(--navline-h) + var(--navbar-h)));
+  padding-top: var(--hero-top-pad);
 }
 
 .iota-hero__bg{
   position: absolute;
   inset: 0;
-  background-size: cover;
   background-position: center;
+  background-size: cover;
   background-repeat: no-repeat;
+  transform: scale(1.03);
   z-index: 0;
 }
 
-.iota-hero__glass{
+.iota-hero__overlay{
   position: absolute;
   inset: 0;
+  background:
+    radial-gradient(800px 450px at 50% 18%, rgba(255,255,255,.12), transparent 60%),
+    linear-gradient(180deg, rgba(2,16,40,.56), rgba(2,16,40,.82));
   z-index: 1;
-  background: rgba(5, 10, 20, 0.45); /* lighter dark */
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 .iota-hero__content{
   position: relative;
   z-index: 2;
-  min-height: 100vh;
+  padding-bottom: 56px;
+}
+
+.iota-hero__card{
+  max-width: 880px;
+  margin: 0 auto;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: var(--iota-radius-xl);
+  backdrop-filter: blur(var(--iota-blur));
+  -webkit-backdrop-filter: blur(var(--iota-blur));
+  box-shadow: var(--iota-shadow-lg);
+  padding: clamp(22px, 3vw, 36px);
+}
+
+.iota-hero__chips{
   display: flex;
-  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
   justify-content: center;
-  text-align: center;
-  padding: clamp(1.5rem, 3vw, 3rem);
+  margin-top: 16px;
 }
 
-.iota-hero__inner{
-  max-width: 1000px;
+.iota-chip{
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.92);
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-weight: 900;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
+.iota-chip i{
+  margin-right: 8px;
+  opacity: .95;
+}
+
+/* Typography */
+.iota-h1{
+  color: rgba(255,255,255,.96);
+  font-weight: 950;
+  letter-spacing: .2px;
+  font-size: clamp(1.8rem, 3.2vw, 3rem);
+  margin: 0 0 10px;
+}
+
+.iota-lead{
+  color: rgba(255,255,255,.85);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  margin: 0;
+}
+
+/* Buttons */
+.iota-btn{
+  background: linear-gradient(135deg, #1a6fb3, #0a3d91);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff !important;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  transition: transform .15s ease, filter .15s ease;
+}
+.iota-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+.iota-btn--ghost{
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+}
+
+/* =========================================================
+   SECTIONS + CARDS
+   ========================================================= */
+
+.iota-section{
+  padding: 56px 0;
+}
+
+.iota-card{
+  background: rgba(255,255,255,.90);
+  border-radius: var(--iota-radius-md);
+  border: 1px solid rgba(0,0,0,.06);
+  box-shadow: var(--iota-shadow-md);
+  padding: 22px;
+  height: 100%;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.iota-card:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 18px 36px rgba(0,0,0,.10);
+}
+
+.iota-card__icon{
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, rgba(26,111,179,.18), rgba(10,61,145,.18));
+  color: #0a3d91;
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+
+.iota-h3{
+  margin: 0 0 6px;
+  font-weight: 950;
+  color: #102038;
+}
+
+.iota-text{
+  margin: 0;
+  color: rgba(16,32,56,.78);
+  font-weight: 650;
+}
+
+/* =========================================================
+   OFFCANVAS
+   ========================================================= */
+
+.iota-offcanvas{
+  background: #e9eef4;
+  width: 300px;
+  padding-top: 18px;
+  z-index: 99999 !important;
+  border-left: 1px solid rgba(0,0,0,0.08);
+}
+.iota-offcanvas .nav-link{
+  font-weight: 900;
+  padding: 10px 18px;
+  color: #142033;
+  border-radius: 12px;
+  margin: 4px 10px;
+}
+.iota-offcanvas .nav-link:hover{
+  background: linear-gradient(135deg, #1a6fb3, #0a3d91);
+  color: #fff !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 992px){
+  :root{
+    --logo-h: 105px;
+    --logo-top: 30px;
+    --hero-top-pad: 140px;
+  }
+}
+
+@media (max-width: 576px){
+  :root{
+    --logo-h: 92px;
+    --logo-top: 28px;
+    --hero-top-pad: 130px;
+  }
+
+  .iota-nav-user{
+    font-size: 0.95rem;
+  }
+}
+
+
+/* =========================================================
+   LIGHTER, HIGH-GLOSS GLASS OFFCANVAS
+   ========================================================= */
+
+.offcanvas.iota-offcanvas{
+  width: min(92vw, 380px);
+
+  /* More transparent glass */
+  background: linear-gradient(
+    180deg,
+    rgba(8, 32, 78, 0.60) 0%,
+    rgba(0, 18, 48, 0.72) 100%
+  ) !important;
+
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+
+  border: none !important;
+
+  /* Softer shadow */
+  box-shadow: -22px 0 55px rgba(0,0,0,0.45) !important;
+
+  color: rgba(255,255,255,0.96);
+  overflow: hidden;
+}
+
+/* Subtle gloss reflection */
+.offcanvas.iota-offcanvas::before{
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: -10%;
+  width: 120%;
+  height: 160px;
+
+  background: radial-gradient(
+    closest-side at 50% 20%,
+    rgba(255,255,255,0.35),
+    rgba(255,255,255,0.12),
+    transparent 70%
+  );
+
+  pointer-events: none;
+}
+
+/* Softer edge highlight */
+.offcanvas.iota-offcanvas::after{
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 1px;
+  background: rgba(255,255,255,0.15);
+}
+
+/* Links - slightly more transparent tiles */
+.offcanvas.iota-offcanvas .nav-link{
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.10);
+}
+
+.offcanvas.iota-offcanvas .nav-link:hover{
+  background: rgba(255,255,255,0.18);
+}
+
+/* =========================================================
+   GLOBAL PAGE BACKGROUND + TOP IMAGE BAND
+   ========================================================= */
+
+.iota-body{
+  /* Deep blue base everywhere */
+  background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.06), transparent 60%),
+              linear-gradient(180deg, #061b3f 0%, #081a3a 40%, #0a1630 100%);
+  min-height: 100vh;
+}
+
+/* Top image band under the navbar */
+.iota-page-top{
+  position: relative;
+  height: clamp(180px, 26vh, 320px);
+  overflow: hidden;
+
+  /* pull it under your sticky header so it touches the top nicely */
+  margin-top: calc(-1 * (var(--navline-h) + var(--navbar-h)));
+  padding-top: calc(var(--navline-h) + var(--navbar-h));
+}
+
+.iota-page-top__img{
+  position: absolute;
+  inset: 0;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.9;
+  transform: scale(1.03);
+}
+
+/* Blend the image into the blue background */
+.iota-page-top__blend{
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(900px 420px at 50% 20%, rgba(255,255,255,0.12), transparent 62%),
+    linear-gradient(180deg, rgba(2,16,40,0.20) 0%, rgba(2,16,40,0.65) 55%, rgba(2,16,40,0.92) 100%);
+}
+
+/* Main content sits under the image band */
+.iota-main{
+  position: relative;
+  z-index: 2;
+  padding: 28px 0 60px;
+}
+
+/* Small spacing helper so auth cards sit nicely under your top image band */
+.iota-auth--tight { padding-top: 10px; }
+
+/* Optional: make Django form errors look clean on glass */
+.iota-form-error{
+  margin-top: 6px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  background: rgba(220, 53, 69, 0.18);
+  border: 1px solid rgba(220, 53, 69, 0.22);
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+.iota-form-error ul{
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* Small spacing helper so auth cards sit nicely under your top image band */
+.iota-auth--tight { padding-top: 10px; }
+
+/* Optional: make Django form errors look clean on glass */
+.iota-form-error{
+  margin-top: 6px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.92);
+  background: rgba(220, 53, 69, 0.18);
+  border: 1px solid rgba(220, 53, 69, 0.22);
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+.iota-form-error ul{
+  margin: 0;
+  padding-left: 18px;
+}
+
+/* =========================================================
+   PER-PAGE TOP IMAGE PANEL (inside container)
+   Used by login/logout templates: .iota-page-topcard
+   ========================================================= */
+
+.iota-page-shell{
+  padding: 34px 0 64px;
+}
+
+.iota-page-topcard{
+  position: relative;
+  border-radius: var(--iota-radius-xl);
+  overflow: hidden;
+  box-shadow: var(--iota-shadow-lg);
+  border: 1px solid rgba(255,255,255,0.14);
+  margin-bottom: 18px;
+  isolation: isolate; /* keeps blend layers behaving */
+}
+
+.iota-page-topcard__img{
+  height: clamp(170px, 22vh, 260px);
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transform: scale(1.03);
+}
+
+.iota-page-topcard__blend{
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(700px 260px at 50% 25%, rgba(255,255,255,0.12), transparent 60%),
+    linear-gradient(180deg, rgba(2,16,40,0.18) 0%, rgba(2,16,40,0.65) 60%, rgba(2,16,40,0.92) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.iota-page-topcard__content{
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  z-index: 2;
+  color: #ffffff;
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  text-shadow: 0 12px 20px rgba(0,0,0,0.45);
+}
+
+/* =========================================================
+   AUTH CARD (high contrast dark glass)
+   ========================================================= */
+
+.iota-auth{
+  min-height: auto;
+  display: block;
+  padding: 0;
+}
+
+.iota-auth--under-topcard{
+  padding: 0;
+}
+
+.iota-auth-card{
+  background: rgba(0, 18, 48, 0.86) !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
+  border-radius: var(--iota-radius-xl);
+  backdrop-filter: blur(var(--iota-blur));
+  -webkit-backdrop-filter: blur(var(--iota-blur));
+  box-shadow: var(--iota-shadow-lg);
+  padding: clamp(22px, 3vw, 34px);
+}
+
+.iota-auth-title{
+  color: #ffffff !important;
+}
+
+.iota-auth-subtitle{
+  color: rgba(255,255,255,0.88) !important;
+}
+
+.iota-label{
+  color: rgba(255,255,255,0.92) !important;
+  font-weight: 850;
+}
+
+.iota-input{
+  background: rgba(255,255,255,0.08) !important;
+  border: 1px solid rgba(255,255,255,0.22) !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+}
+
+.iota-input::placeholder{
+  color: rgba(255,255,255,0.55);
+}
+
+.iota-input:focus{
+  background: rgba(255,255,255,0.12) !important;
+  border-color: rgba(10,102,255,0.65) !important;
+  box-shadow: 0 0 0 .2rem rgba(10,102,255,0.25) !important;
+}
+
+/* =========================================================
+   SEAMLESS AUTH PANEL (NO BORDERS, NO LINES, ONE MODULE)
+   Paste at END of style.css
+   ========================================================= */
+
+/* Keep your site background blue (ensures no “white edges” behind panel) */
+.iota-body{
+  background: radial-gradient(1200px 600px at 50% 0%, rgba(255,255,255,0.06), transparent 60%),
+              linear-gradient(180deg, #061b3f 0%, #081a3a 40%, #0a1630 100%) !important;
+}
+
+/* Page spacing */
+.iota-page-shell{
+  padding: 34px 0 64px;
+}
+
+/* One seamless centered module */
+.iota-seamless-panel{
+  width: 100%;
+  max-width: 520px;
+  background: rgba(0, 18, 48, 0.88);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 28px;
+  overflow: hidden;
+  border: none !important;          /* kill all borders */
+  outline: none !important;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.45);
+}
+
+/* Top image section */
+.iota-seamless-top{
+  position: relative;
+  height: clamp(180px, 24vh, 260px);
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Blend overlay so image melts into the panel */
+.iota-seamless-overlay{
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(700px 260px at 50% 20%, rgba(255,255,255,0.10), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,18,48,0.75) 82%, rgba(0,18,48,0.92) 100%);
+}
+
+/* Caption on image */
+.iota-seamless-title{
+  position: absolute;
+  left: 18px;
+  bottom: 14px;
+  color: #fff;
+  font-weight: 950;
+  letter-spacing: 0.2px;
+  text-shadow: 0 12px 20px rgba(0,0,0,0.45);
+}
+
+/* Body section */
+.iota-seamless-body{
+  padding: 32px 28px 36px;
+}
+
+/* Hard kill any borders/lines from older systems */
+.iota-auth-card,
+.iota-page-topcard,
+.iota-page-top,
+.iota-page-top__blend,
+.iota-page-top__img{
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Strong contrast text */
+.iota-auth-title{ color: #ffffff !important; }
+.iota-auth-subtitle{ color: rgba(255,255,255,0.88) !important; }
+.iota-label{ color: rgba(255,255,255,0.92) !important; font-weight: 850; }
+.iota-check, .iota-check .form-check-label{ color: rgba(255,255,255,0.88) !important; }
+
+/* Inputs: borderless look (no white line), still usable */
+.iota-input{
+  background: rgba(255,255,255,0.08) !important;
+  border: none !important;                 /* remove the line */
+  outline: none !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+}
+
+.iota-input:focus{
+  background: rgba(255,255,255,0.12) !important;
+  box-shadow: 0 0 0 2px rgba(10,102,255,0.30) !important;  /* focus ring instead of border */
+}
+
+/* Links */
+.iota-auth-link{
+  color: rgba(255,255,255,0.90) !important;
+}
+.iota-auth-link:hover{
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+/* Mobile */
+@media (max-width: 576px){
+  .iota-seamless-body{ padding: 24px 20px 28px; }
+}

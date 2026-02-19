@@ -1,26 +1,46 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}Logout | IOTA{% endblock %}
 
 {% block iota_content %}
 
-<div class="text-center">
+<section class="iota-page-shell">
+  <div class="container d-flex justify-content-center">
+    <div class="iota-seamless-panel">
 
-    <h1 class="iota-header">Logout</h1>
-    <p class="text-light mb-4">Are you sure you want to log out?</p>
+      <!-- Top image (inside the same panel) -->
+      <div class="iota-seamless-top"
+           style="background-image: url('{% static "images/iota-background-3.png" %}');">
+        <div class="iota-seamless-overlay"></div>
+        <div class="iota-seamless-title">Secure Session</div>
+      </div>
 
-    <form method="POST" action="{% url 'account_logout' %}">
-        {% csrf_token %}
-        <button type="submit" class="iota-btn px-4 py-2">
-            <i class="fa-solid fa-right-from-bracket me-2"></i> Confirm Logout
-        </button>
+      <!-- Body -->
+      <div class="iota-seamless-body text-center">
+        <h1 class="iota-auth-title mb-2">{% trans "Logout" %}</h1>
+        <p class="iota-auth-subtitle mb-4">
+          {% trans "Are you sure you want to log out?" %}
+        </p>
 
-        <a href="{% url 'home' %}" class="btn btn-outline-light px-4 py-2 ms-3">
-            Cancel
-        </a>
-    </form>
+        <form method="POST" action="{% url 'account_logout' %}">
+          {% csrf_token %}
 
-</div>
+          <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <button type="submit" class="btn iota-btn px-4 py-2">
+              <i class="fa-solid fa-right-from-bracket me-2"></i> {% trans "Confirm Logout" %}
+            </button>
+
+            <a href="{% url 'home' %}" class="btn iota-btn iota-btn--ghost px-4 py-2">
+              {% trans "Cancel" %}
+            </a>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>
 
 {% endblock %}

@@ -1,48 +1,92 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}Login | IOTA{% endblock %}
 
 {% block iota_content %}
 
-<div class="text-center mb-4">
-    <h1 class="iota-header">Login to Your Account</h1>
-    <p class="text-light">Access your personalised IOTA learning dashboard.</p>
-</div>
+<section class="iota-page-shell">
+  <div class="container d-flex justify-content-center">
+    <div class="iota-seamless-panel">
 
-<form method="POST" action="{% url 'account_login' %}">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
+      <!-- Top image (inside the same panel) -->
+      <div class="iota-seamless-top"
+           style="background-image: url('{% static "images/iota-background-3.png" %}');">
+        <div class="iota-seamless-overlay"></div>
+        <div class="iota-seamless-title"></div>
+      </div>
 
-    <div class="mb-3">
-        <label class="form-label text-light">Email or Username</label>
-        <input type="text" name="{{ form.login.name }}" class="form-control iota-input"
-               value="{{ form.login.value|default:'' }}">
+      <!-- Body -->
+      <div class="iota-seamless-body">
+        <h1 class="iota-auth-title text-center mb-2">{% trans "Login to Your Account" %}</h1>
+        <p class="iota-auth-subtitle text-center mb-4">
+          {% trans "Access your personalised IOTA dashboard." %}
+        </p>
+
+        <form method="POST" action="{% url 'account_login' %}" novalidate>
+          {% csrf_token %}
+          {{ form.non_field_errors }}
+
+          <div class="mb-3">
+            <label class="iota-label" for="{{ form.login.id_for_label }}">{% trans "Email or Username" %}</label>
+            <input
+              type="text"
+              name="{{ form.login.name }}"
+              id="{{ form.login.id_for_label }}"
+              value="{{ form.login.value|default:'' }}"
+              class="form-control iota-input"
+              autocomplete="username"
+              required
+            >
+            {% if form.login.errors %}
+              <div class="iota-form-error">{{ form.login.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="iota-label" for="{{ form.password.id_for_label }}">{% trans "Password" %}</label>
+            <input
+              type="password"
+              name="{{ form.password.name }}"
+              id="{{ form.password.id_for_label }}"
+              class="form-control iota-input"
+              autocomplete="current-password"
+              required
+            >
+            {% if form.password.errors %}
+              <div class="iota-form-error">{{ form.password.errors }}</div>
+            {% endif %}
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="form-check iota-check">
+              {{ form.remember }}
+              <label class="form-check-label" for="{{ form.remember.id_for_label }}">
+                {% trans "Remember me" %}
+              </label>
+            </div>
+
+            <a href="{% url 'account_reset_password' %}" class="iota-auth-link">
+              {% trans "Forgot password?" %}
+            </a>
+          </div>
+
+          <button type="submit" class="btn iota-btn w-100 py-2">
+            <i class="fa-solid fa-right-to-bracket me-2"></i> {% trans "Login" %}
+          </button>
+
+          <div class="text-center mt-4 iota-auth-footer">
+            <span>{% trans "New to IOTA?" %}</span>
+            <a href="{% url 'account_signup' %}" class="iota-auth-link fw-bold ms-1">
+              {% trans "Create an account" %}
+            </a>
+          </div>
+        </form>
+
+      </div>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label text-light">Password</label>
-        <input type="password" name="{{ form.password.name }}" class="form-control iota-input">
-    </div>
-
-    <div class="form-check mb-4 text-light">
-        {{ form.remember }}
-        <label class="form-check-label">Remember Me</label>
-    </div>
-
-    <button type="submit" class="iota-btn w-100 py-2">
-        <i class="fa-solid fa-right-to-bracket me-2"></i> Login
-    </button>
-
-    <div class="text-center mt-3">
-        <a href="{% url 'account_reset_password' %}" class="text-light">Forgot Password?</a>
-    </div>
-
-    <div class="text-center mt-2">
-        <span class="text-light">New to IOTA?</span>
-        <a href="{% url 'account_signup' %}" class="text-light fw-bold">Create an account</a>
-    </div>
-
-</form>
+  </div>
+</section>
 
 {% endblock %}
