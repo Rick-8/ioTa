@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manager – Certificates{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+  <div class="cozy-dark-glass p-5 rounded-4 shadow-lg">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2 class="text-light mb-0">
+        <i class="fa-solid fa-award me-2 text-warning"></i> Issued Certificates
+      </h2>
+      <a href="{% url 'academy_manager_dashboard' %}" class="btn btn-outline-light btn-sm">
+        <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+      </a>
+    </div>
+
+    <p class="text-light mb-4">
+      Browse and download issued certificates. Use the filters below to locate a specific user or course.
+    </p>
+
+    <!-- Filter Bar -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <input id="searchInput" type="text"
+               class="form-control bg-dark text-light border-secondary"
+               placeholder="🔍 Filter by user, course, or module..." onkeyup="filterTable()">
+      </div>
+      <div class="col-md-6">
+        <select id="sortFilter" class="form-select bg-dark text-light border-secondary" onchange="sortTable()">
+          <option value="">Sort by...</option>
+          <option value="cert">Certificate #</option>
+          <option value="user">User</option>
+          <option value="course">Course</option>
+          <option value="date">Date</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table id="certificatesTable" class="table table-dark table-striped align-middle mb-0">
+        <thead class="table-secondary text-dark">
+          <tr>
+            <th>Certificate #</th>
+            <th>User</th>
+            <th>Course</th>
+            <th>Module</th>
+            <th>Score</th>
+            <th>Issued</th>
+            <th class="text-center">Download</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in certificates %}
+          <tr>
+            <td>{{ c.certificate_number }}</td>
+            <td>{{ c.user.get_full_name|default:c.user.username }}</td>
+            <td>{{ c.course.title }}</td>
+            <td>{{ c.module.title }}</td>
+            <td>
+              {% if c.score %}
+                <span class="text-info fw-bold">{{ c.score }}%</span>
+              {% else %}
+                <span class="text-muted">—</span>
+              {% endif %}
+            </td>
+            <td>{{ c.issued_at|date:"d M Y, H:i" }}</td>
+            <td class="text-center">
+              <a href="{% url 'academy_generate_certificate_pdf' c.id %}" 
+                 class="btn btn-sm btn-outline-warning">
+                <i class="fa-solid fa-download me-1"></i> PDF
+              </a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-light-50 py-3">
+              No certificates issued yet.
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="p-3 mt-4 rounded-3 border border-warning bg-dark bg-opacity-75">
+      <p class="mb-1 text-warning fw-bold">
+        🏆 Certificates are automatically generated once a final test is marked as passed.
+      </p>
+      <p class="mb-0 text-warning">
+        All certificates can be re-downloaded or reprinted at any time.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+function filterTable() {
+  const input = document.getElementById("searchInput").value.toLowerCase();
+  const rows = document.querySelectorAll("#certificatesTable tbody tr");
+
+  rows.forEach(row => {
+    const cert = row.cells[0].innerText.toLowerCase();
+    const user = row.cells[1].innerText.toLowerCase();
+    const course = row.cells[2].innerText.toLowerCase();
+    const module = row.cells[3].innerText.toLowerCase();
+    row.style.display = (
+      cert.includes(input) ||
+      user.includes(input) ||
+      course.includes(input) ||
+      module.includes(input)
+    ) ? "" : "none";
+  });
+}
+
+function sortTable() {
+  const select = document.getElementById("sortFilter").value;
+  const tbody = document.querySelector("#certificatesTable tbody");
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+
+  const getValue = (row, index) => row.cells[index].innerText.toLowerCase();
+
+  let index;
+  if (select === "cert") index = 0;
+  else if (select === "user") index = 1;
+  else if (select === "course") index = 2;
+  else if (select === "date") index = 5;
+  else return;
+
+  rows.sort((a, b) => getValue(a, index).localeCompare(getValue(b, index)));
+  tbody.innerHTML = "";
+  rows.forEach(r => tbody.appendChild(r));
+}
+</script>
+{% endblock %}

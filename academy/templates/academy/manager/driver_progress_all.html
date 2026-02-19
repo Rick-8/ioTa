@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Driver Progress (All Drivers){% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="cozy-dark-glass p-5 rounded-4 shadow-lg">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-light mb-0">
+                <i class="fa-solid fa-chart-line me-2 text-info"></i>
+                Driver Progress (All Drivers)
+            </h2>
+            <a href="{% url 'academy_manager_dashboard' %}" class="btn btn-outline-light btn-sm">
+                <i class="fa-solid fa-arrow-left me-2"></i> Back
+            </a>
+        </div>
+
+        <p class="text-light mb-4">
+            Showing every driver and every module — including drivers who have not started.
+        </p>
+
+        <!-- 🔍 GLOBAL SEARCH BAR -->
+        <div class="mb-4">
+            <input id="globalSearch" type="text"
+                   class="form-control bg-dark text-light border-secondary"
+                   placeholder="🔍 Search anything... (driver, module, score, status, date)"
+                   onkeyup="globalFilter()">
+        </div>
+
+        <div class="table-responsive">
+            <table id="progressTable" class="table table-dark table-striped align-middle">
+                <thead class="table-secondary text-dark">
+                    <tr>
+                        <th>Driver</th>
+                        <th>Module</th>
+                        <th>Score</th>
+                        <th>Status</th>
+                        <th>Completed</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for row in rows %}
+                    <tr>
+                        <td>{{ row.user.get_full_name|default:row.user.username }}</td>
+                        <td>{{ row.module.title }}</td>
+                        <td>
+                            {% if row.score %}
+                                <span class="text-info fw-bold">{{ row.score }}%</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.status == "completed" %}
+                                <span class="badge bg-success">Completed</span>
+                            {% elif row.status == "in_progress" %}
+                                <span class="badge bg-warning text-dark">In Progress</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Not Started</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if row.completed_at %}
+                                {{ row.completed_at|date:"d M Y, H:i" }}
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+<script>
+/* 🔍 UNIVERSAL SEARCH ACROSS ALL COLUMNS */
+function globalFilter() {
+    const searchValue = document.getElementById("globalSearch").value.toLowerCase();
+    const rows = document.querySelectorAll("#progressTable tbody tr");
+
+    rows.forEach(row => {
+        const textContent = row.innerText.toLowerCase();
+        row.style.display = textContent.includes(searchValue) ? "" : "none";
+    });
+}
+</script>
+
+{% endblock %}

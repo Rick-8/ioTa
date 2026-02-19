@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Login | IOTA{% endblock %}
+
+{% block iota_content %}
+
+<div class="text-center mb-4">
+    <h1 class="iota-header">Login to Your Account</h1>
+    <p class="text-light">Access your personalised IOTA learning dashboard.</p>
+</div>
+
+<form method="POST" action="{% url 'account_login' %}">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3">
+        <label class="form-label text-light">Email or Username</label>
+        <input type="text" name="{{ form.login.name }}" class="form-control iota-input"
+               value="{{ form.login.value|default:'' }}">
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label text-light">Password</label>
+        <input type="password" name="{{ form.password.name }}" class="form-control iota-input">
+    </div>
+
+    <div class="form-check mb-4 text-light">
+        {{ form.remember }}
+        <label class="form-check-label">Remember Me</label>
+    </div>
+
+    <button type="submit" class="iota-btn w-100 py-2">
+        <i class="fa-solid fa-right-to-bracket me-2"></i> Login
+    </button>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'account_reset_password' %}" class="text-light">Forgot Password?</a>
+    </div>
+
+    <div class="text-center mt-2">
+        <span class="text-light">New to IOTA?</span>
+        <a href="{% url 'account_signup' %}" class="text-light fw-bold">Create an account</a>
+    </div>
+
+</form>
+
+{% endblock %}

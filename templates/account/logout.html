@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}Logout | IOTA{% endblock %}
+
+{% block iota_content %}
+
+<div class="text-center">
+
+    <h1 class="iota-header">Logout</h1>
+    <p class="text-light mb-4">Are you sure you want to log out?</p>
+
+    <form method="POST" action="{% url 'account_logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="iota-btn px-4 py-2">
+            <i class="fa-solid fa-right-from-bracket me-2"></i> Confirm Logout
+        </button>
+
+        <a href="{% url 'home' %}" class="btn btn-outline-light px-4 py-2 ms-3">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+{% endblock %}

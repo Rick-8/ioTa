@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Question{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="cozy-dark-glass p-4 rounded-4 shadow-lg">
+
+        <h2 class="text-light mb-4">
+            <i class="fa-solid fa-square-plus text-warning me-2"></i>
+            Add New Question
+        </h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <!-- Question Details -->
+            <div class="mb-4">
+                <label class="form-label text-light fw-bold">Module</label>
+                {{ q_form.module }}
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label text-light fw-bold">Question Text</label>
+                {{ q_form.text }}
+            </div>
+
+            <div class="mb-4 col-md-3">
+                <label class="form-label text-light fw-bold">Order (optional)</label>
+                {{ q_form.order }}
+            </div>
+
+            <hr class="border-secondary my-4">
+
+            <h4 class="text-warning mb-3"><i class="fa-solid fa-check me-2"></i>Answer Options</h4>
+
+            {{ c_formset.management_form }}
+
+            {% for form in c_formset %}
+                <div class="bg-dark p-3 rounded-3 mb-3 border border-secondary">
+
+                    <div class="d-flex align-items-start gap-3">
+
+                        <!-- Correct Checkbox -->
+                        <div class="form-check mt-2">
+                            {{ form.is_correct }}
+                            <label class="form-check-label text-light">
+                                Correct
+                            </label>
+                        </div>
+
+                        <!-- Answer Text -->
+                        <div class="flex-grow-1">
+                            <label class="form-label text-light small">Answer Text</label>
+                            {{ form.text }}
+                        </div>
+
+                        {% if form.DELETE %}
+                        <div class="text-danger small">
+                            {{ form.DELETE }} Delete
+                        </div>
+                        {% endif %}
+                    </div>
+
+                </div>
+            {% endfor %}
+
+            <button class="btn btn-warning mt-3 w-100 py-2" type="submit">
+                <i class="fa-solid fa-save me-2"></i> Save Question
+            </button>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block nav_academy_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}Final Test – {{ module.title }} | Academy{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4 d-flex flex-column gap-3">
+
+            <a href="{% url 'academy_module_detail' course.slug module.slug %}"
+               class="btn btn-sm"
+               style="background:#800020; border:none; color:white; width:160px;">
+                &larr; Back to Module
+            </a>
+
+            <h1 class="text-light mb-0">Final Test – {{ module.title }}</h1>
+
+            <p class="text-light mb-0">
+                Your answers will be sent to the Cozy Coaches operations team for review.
+                You will not see instant feedback. Please answer all questions carefully.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <form method="post" class="cozy-dark-glass p-4">
+            {% csrf_token %}
+
+            {% for question in questions %}
+                <div class="mb-4">
+                    <h5 class="text-light">
+                        Q{{ forloop.counter }}. {{ question.text }}
+                    </h5>
+
+                    {% for choice in question.choices.all %}
+                        <div class="form-check text-light mt-1">
+                            <input class="form-check-input"
+                                   type="radio"
+                                   name="question_{{ question.id }}"
+                                   id="q{{ question.id }}_choice{{ choice.id }}"
+                                   value="{{ choice.id }}">
+                            <label class="form-check-label" for="q{{ question.id }}_choice{{ choice.id }}">
+                                {{ choice.text }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <button type="submit"
+                    class="btn fw-bold w-100 py-3"
+                    style="background:#800020; border:none; color:white;">
+                Submit Final Test for Review
+            </button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

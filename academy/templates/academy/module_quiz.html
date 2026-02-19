@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block nav_academy_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}{{ module.title }} – Practice Quiz | Academy{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4">
+            <a href="{% url 'academy_module_detail' course.slug module.slug %}"
+               class="btn btn-sm mb-3"
+               style="background:#800020; border:none; color:white;">
+                &larr; Back to Module
+            </a>
+
+            <h1 class="mb-2 text-light">{{ module.title }}</h1>
+            <p class="mb-0 text-light">
+                Practice quiz for {{ course.title }}. Your answers will show immediate feedback
+                to help you learn before the final test.
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4 text-light">
+
+            {% if score_percent is not None %}
+                <h4>Your result</h4>
+                <p>
+                    You scored <strong>{{ score_percent }}%</strong>.
+                    {% if passed %}
+                        <span class="badge bg-success">Pass</span>
+                    {% else %}
+                        <span class="badge bg-danger">Below pass mark</span>
+                    {% endif %}
+                </p>
+                <hr>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% for question in questions %}
+                    <div class="mb-4">
+                        <h5>Q{{ forloop.counter }}. {{ question.text }}</h5>
+
+                        {% for choice in question.choices.all %}
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="radio"
+                                       name="question_{{ question.id }}"
+                                       id="q{{ question.id }}_c{{ choice.id }}"
+                                       value="{{ choice.id }}"
+                                       required>
+                                <label class="form-check-label"
+                                       for="q{{ question.id }}_c{{ choice.id }}">
+                                    {{ choice.text }}
+                                </label>
+                            </div>
+                        {% endfor %}
+
+                        {# Show feedback only after a submission #}
+                        {% if answers_marked %}
+                            {% for ans in answers_marked %}
+                                {% if ans.question.id == question.id %}
+                                    <p class="mt-2 mb-0">
+                                        {% if ans.is_correct %}
+                                            <span class="badge bg-success">You answered correctly.</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Your answer was incorrect.</span>
+                                        {% endif %}
+                                    </p>
+                                    {% if question.explanation %}
+                                        <p class="mb-0"><em>{{ question.explanation }}</em></p>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <button type="submit"
+                        class="btn fw-bold w-100 py-2"
+                        style="background:#800020; border:none; color:white;">
+                    Submit Answers
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

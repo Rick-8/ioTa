@@ -1,0 +1,67 @@
+<div class="offcanvas-header">
+    <h5 class="offcanvas-title text-light">
+        <i class="fa-solid fa-bars-staggered me-2"></i>
+        Menu
+    </h5>
+    <button type="button" class="btn-close btn-close-dark"
+            data-bs-dismiss="offcanvas"></button>
+</div>
+
+<div class="offcanvas-body">
+
+    <div class="list-group">
+
+        <!-- Home -->
+        <a href="{% url 'home' %}" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-house me-2"></i>
+            Home
+        </a>
+
+        {% if user.is_authenticated %}
+
+            <!-- Student Dashboard -->
+            <a href="{% url 'academy_dashboard' %}" class="list-group-item list-group-item-action">
+                <i class="fa-solid fa-gauge-high me-2"></i>
+                My Dashboard
+            </a>
+
+            <!-- Profile (placeholder, add later) -->
+            <a href="#" class="list-group-item list-group-item-action">
+                <i class="fa-solid fa-user me-2"></i>
+                My Profile
+            </a>
+
+        {% endif %}
+
+        {% if user.is_superuser %}
+        <!-- Manager Section -->
+        <div class="mt-3 fw-bold text-secondary px-3">Management</div>
+
+        <a href="{% url 'academy_manager_dashboard' %}" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-screwdriver-wrench me-2"></i>
+            Manager Dashboard
+        </a>
+
+        <a href="{% url 'academy_manage_courses' %}" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-layer-group me-2"></i>
+            Manage Courses
+        </a>
+
+        <a href="{% url 'academy_manager_users' %}" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-users-gear me-2"></i>
+            Manage Users
+        </a>
+
+        <a href="{% url 'academy_manage_questions' %}" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-question me-2"></i>
+            Question Bank
+        </a>
+
+        <a href="{% url 'academy_manager_documents' %}" class="list-group-item list-group-item-action">
+            <i class="fa-solid fa-folder-open me-2"></i>
+            Documents
+        </a>
+
+        {% endif %}
+    </div>
+</div>

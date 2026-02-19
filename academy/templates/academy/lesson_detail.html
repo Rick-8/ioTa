@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block nav_academy_active %}active{% endblock %}
+{% block title %}{{ lesson.title }} | Academy{% endblock %}
+
+{% block content %}
+
+<div class="container my-4">
+
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{% url 'academy_module_detail' course.slug module.slug %}"
+           class="btn btn-sm text-light"
+           style="background:#800020; border:none;">
+            <i class="fa-solid fa-angle-left me-1"></i> Back to Module
+        </a>
+    </div>
+
+    <!-- Title Block -->
+    <div class="cozy-dark-glass p-4 mb-4">
+        <h2 class="text-light mb-1">{{ lesson.title }}</h2>
+        <p class="text-secondary small mb-2">
+            {{ course.title }} → {{ module.title }}
+        </p>
+
+        {% if lesson.order %}
+        <span class="badge rounded-pill px-3 py-2"
+              style="background:#800020; color:white;">
+            Lesson {{ lesson.order }}
+        </span>
+        {% endif %}
+    </div>
+
+    <!-- VIDEO FIRST -->
+    {% if lesson.video_url %}
+    <div class="cozy-dark-glass p-3 mb-4">
+        <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm" id="player"></div>
+    </div>
+    {% endif %}
+
+    <!-- IMAGE SECOND -->
+    {% if lesson.image_url %}
+    <div class="cozy-dark-glass p-3 mb-4">
+        <img src="{{ lesson.image_url }}"
+             class="img-fluid rounded"
+             style="max-height:350px; width:100%; object-fit:cover;"
+             alt="Lesson image">
+    </div>
+    {% endif %}
+
+    <!-- CONTENT THIRD -->
+    <div class="cozy-dark-glass p-4 mb-4">
+        <div class="text-light" style="line-height:1.6;">
+            {{ lesson.content|safe }}
+        </div>
+    </div>
+
+    <!-- COMPLETE BUTTON -->
+    <form method="post"
+          action="{% url 'academy_complete_lesson' lesson.id %}"
+          class="mb-5">
+        {% csrf_token %}
+        <button type="submit"
+                class="btn fw-bold w-100 py-2"
+                style="background:#800020; border:none; color:white;">
+            <i class="fa-solid fa-circle-check me-2"></i>
+            Mark Lesson as Complete
+        </button>
+    </form>
+
+</div>
+
+{% if lesson.video_url %}
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+    function getCookie(name) {
+        const value = ("; " + document.cookie).split("; " + name + "=");
+        if (value.length === 2) return value.pop().split(";").shift();
+    }
+    const csrftoken = getCookie("csrftoken");
+
+    function extractYT(url) {
+        const m = url.match(/(?:v=|\.be\/)([^&]+)/);
+        return m ? m[1] : null;
+    }
+
+    function onYouTubeIframeAPIReady() {
+        const id = extractYT("{{ lesson.video_url|escapejs }}");
+        if (!id) return;
+
+        new YT.Player('player', {
+            videoId: id,
+            events: {
+                onStateChange: evt => {
+                    if (evt.data === YT.PlayerState.ENDED) {
+                        fetch("{% url 'academy_complete_lesson' lesson.id %}", {
+                            method: "POST",
+                            headers: { "X-CSRFToken": csrftoken }
+                        }).then(() => location.reload());
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endif %}
+
+{% endblock %}

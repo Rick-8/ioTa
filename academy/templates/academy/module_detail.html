@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block nav_academy_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}{{ module.title }} – {{ course.title }} | Academy{% endblock %}
+
+{% block content %}
+
+<!-- Module header panel -->
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4 d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+
+            <div>
+                <a href="{% url 'academy_course_detail' course.slug %}" class="btn btn-sm mb-3"
+                    style="background:#800020; border:none; color:white;">
+                    &larr; Back to {{ course.title }}
+                </a>
+
+                <h1 class="mb-2 text-light">{{ module.title }}</h1>
+                <p class="mb-0 text-light">
+                    {{ module.description }}
+                </p>
+            </div>
+
+            {% if module_progress %}
+            <div class="text-md-end mt-3 mt-md-0">
+                {% if module_progress.passed %}
+                <span class="badge bg-success mb-2">Module completed</span>
+                {% elif module_progress.status == "in_progress" %}
+                <span class="badge bg-warning text-dark mb-2">In progress</span>
+                {% else %}
+                <span class="badge bg-secondary mb-2">Not started</span>
+                {% endif %}
+            </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+{% if module.slug == "new-driver-induction-final-test" %}
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4 text-center">
+            <p class="text-light mb-3">
+                This is your final assessment. Your answers will be submitted to the operations
+                team for review. You will not see instant feedback.
+            </p>
+            <a href="{% url 'academy_final_test' course.slug module.slug %}" class="btn fw-bold py-3"
+                style="background:#800020; border:none; color:white; font-size:1.1rem;">
+                Start Final Test
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{# Practice Quiz button (for modules that have questions) #}
+{% if module.questions.all %}
+<div class="row justify-content-center mb-3">
+    <div class="col-lg-10">
+        <a href="{% url 'academy_module_quiz' course.slug module.slug %}" class="btn w-100 fw-bold"
+            style="background:#800020; border:none; color:white;">
+            Take Practice Quiz
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<!-- Lessons list -->
+{% if lesson_rows %}
+<div class="row justify-content-center g-3">
+    {% for row in lesson_rows %}
+    {% with lesson=row.lesson progress=row.progress %}
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-3 d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+
+            <!-- Left: lesson info -->
+            <div>
+                <h5 class="mb-1 text-light">
+                    Lesson {{ lesson.order }} – {{ lesson.title }}
+                </h5>
+                {% if lesson.content %}
+                <p class="mb-2 text-light">
+                    {{ lesson.content|striptags|truncatewords:30 }}
+                </p>
+                {% endif %}
+            </div>
+
+            <!-- Right: status + actions -->
+            <div class="text-md-end w-100 w-md-auto">
+
+                {% if progress %}
+                {% if progress.completed %}
+                <span class="badge bg-success mb-2">Completed</span>
+                {% else %}
+                <span class="badge bg-warning text-dark mb-2">In progress</span>
+                {% endif %}
+                {% else %}
+                <span class="badge bg-secondary mb-2">Not started</span>
+                {% endif %}
+
+                <!-- View full lesson -->
+                <a href="{% url 'academy_lesson_detail' course.slug module.slug lesson.id %}"
+                    class="btn w-100 fw-bold mt-2" style="background:#800020; border:none; color:white;">
+                    Open Lesson
+                </a>
+
+                <!-- Mark complete button -->
+                <form method="post" action="{% url 'academy_complete_lesson' lesson.id %}" class="mt-2">
+                    {% csrf_token %}
+                    <button type="submit" class="btn w-100 fw-bold" style="background:#444; border:none; color:white;">
+                        {% if progress and progress.completed %}
+                        Mark as Reviewed Again
+                        {% else %}
+                        Mark Lesson Complete
+                        {% endif %}
+                    </button>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+    {% endwith %}
+    {% endfor %}
+</div>
+
+{% elif lessons %}
+{# Fallback if your view only passes `lessons` and not `lesson_rows` #}
+<div class="row justify-content-center g-3">
+    {% for lesson in lessons %}
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-3">
+            <h5 class="mb-1 text-light">
+                Lesson {{ lesson.order }} – {{ lesson.title }}
+            </h5>
+            {% if lesson.content %}
+            <div class="mb-2 text-light">
+                {{ lesson.content|safe }}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% else %}
+{% if not module.questions.exists %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4 text-center">
+            <p class="mb-0 text-light">
+                No lessons have been added to this module yet.
+            </p>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+
+
+{% endblock %}

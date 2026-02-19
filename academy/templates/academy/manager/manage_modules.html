@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manage Modules{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="cozy-dark-glass p-5 rounded-4 shadow-lg">
+
+        <!-- Header + Back -->
+        <a href="{% url 'academy_manage_courses' %}" class="btn btn-secondary fw-bold mb-4">
+            <i class="fa-solid fa-angle-left me-2"></i> Back to Courses
+        </a>
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="text-light mb-0">
+                <i class="fa-solid fa-layer-group me-2 text-info"></i> Manage Modules
+            </h2>
+        </div>
+
+        <h4 class="text-warning mb-3">{{ course.title }}</h4>
+        <p class="text-light">{{ course.description }}</p>
+
+        <!-- GREEN: Add Module -->
+        <div class="mb-4">
+            <a href="{% url 'academy_add_module' course.id %}" class="btn btn-success fw-bold">
+                <i class="fa-solid fa-circle-plus me-2"></i> Add New Module
+            </a>
+        </div>
+
+
+        <!-- Modules Table -->
+        <div class="table-responsive">
+            <table class="table table-dark table-striped align-middle">
+                <thead>
+                    <tr class="text-center">
+                        <th>Title</th>
+                        <th>Order</th>
+                        <th>Lessons</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for mod in modules %}
+                    <tr class="text-center">
+                        <td class="text-light">{{ mod.title }}</td>
+                        <td>{{ mod.order }}</td>
+                        <td>{{ mod.lessons.count }}</td>
+
+                        <td>
+
+                            <div class="d-flex justify-content-center gap-2">
+
+                                <!-- YELLOW: Edit disabled -->
+                                <button class="btn btn-warning btn-sm fw-bold" disabled title="Edit Module not available yet">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+
+                                <!-- BLUE: Manage lessons -->
+                                <a href="{% url 'academy_manage_lessons' mod.id %}"
+                                   class="btn btn-primary btn-sm fw-bold">
+                                    <i class="fa-solid fa-book-open"></i>
+                                </a>
+
+                                <!-- RED: Delete (Popover) -->
+                                <button type="button"
+                                        class="btn btn-danger btn-sm fw-bold delete-btn"
+                                        data-bs-toggle="popover"
+                                        data-bs-custom-class="delete-popover"
+                                        data-bs-trigger="focus"
+                                        data-bs-placement="left"
+                                        data-bs-html="true"
+                                        data-bs-content="
+                                            <div class='popover-body'>
+                                                Delete <strong>{{ mod.title }}</strong>?
+                                                <div class='mt-2 d-flex justify-content-between'>
+                                                    <button class='btn-cancel' onclick='hideAllPopovers()'>Cancel</button>
+                                                    <a href='{% url 'academy_delete_module' mod.id %}' class='btn-confirm'>Delete</a>
+                                                </div>
+                                            </div>
+                                        ">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center text-light py-3">
+                            No modules have been added yet.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<style>
+/* Match Manage Lesson popover style */
+.popover.delete-popover {
+    background: rgba(20,20,20,0.95);
+    border: 1px solid #555;
+    color: white;
+    border-radius: 10px;
+    max-width: 240px;
+}
+.popover.delete-popover .popover-body {
+    color: white;
+    font-size: 0.85rem;
+}
+.popover .btn-cancel {
+    background: #555;
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: .8rem;
+}
+.popover .btn-confirm {
+    background: #b30000;
+    border: none;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: .8rem;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        new bootstrap.Popover(btn);
+    });
+});
+
+function hideAllPopovers() {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        const instance = bootstrap.Popover.getInstance(btn);
+        if (instance) instance.hide();
+    });
+}
+</script>
+{% endblock %}

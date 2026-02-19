@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}IOTA – Home{% endblock %}
+
+{% block iota_content %}
+
+<div class="container py-5">
+
+    <!-- HERO SECTION -->
+    <div class="text-center px-3 px-md-5">
+
+        <!-- HEADER -->
+        <h1 class="iota-header mb-3" style="font-size: clamp(1.8rem, 4vw, 3rem);">
+            Welcome to the IOTA Training Portal
+        </h1>
+
+        <!-- SUBTEXT -->
+        <p class="lead mx-auto"
+           style="color: var(--iota-silver); max-width: 650px; font-size: clamp(1rem, 2vw, 1.3rem);">
+            Access structured learning, professional development, and certified digital training.
+        </p>
+
+        <!-- BUTTONS -->
+        <div class="mt-4 d-flex flex-column flex-md-row justify-content-center align-items-center gap-3">
+
+            {% if user.is_authenticated %}
+                <!-- VIEW COURSES -->
+                <a href="{% url 'academy_dashboard' %}"
+                   class="iota-btn btn-lg rounded-pill px-4 py-2 shadow-sm"
+                   style="font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                    <i class="fa-solid fa-graduation-cap me-2"></i>
+                    View My Courses
+                </a>
+            {% else %}
+                <!-- LOGIN CTA -->
+                <a href="{% url 'account_login' %}"
+                   class="iota-btn btn-lg rounded-pill px-4 py-2 shadow-sm"
+                   style="font-size: clamp(1rem, 1.5vw, 1.2rem);">
+                    <i class="fa-solid fa-right-to-bracket me-2"></i>
+                    Log In to Start Learning
+                </a>
+            {% endif %}
+
+            {% if user.is_superuser %}
+                <!-- MANAGER TOOLS -->
+                <a href="{% url 'academy_manager_dashboard' %}"
+                   class="btn btn-outline-light btn-lg rounded-pill px-4 py-2 shadow-sm"
+                   style="
+                       font-size: clamp(1rem, 1.5vw, 1.2rem);
+                       border-color: var(--iota-silver);
+                       color: var(--iota-silver);
+                   ">
+                    <i class="fa-solid fa-toolbox me-2"></i>
+                    Manager Tools
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

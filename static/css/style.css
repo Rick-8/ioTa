@@ -1,0 +1,180 @@
+/* =========================================================
+   IOTA Global Style Sheet
+   Sleek, modern, fully responsive, non-overlapping
+   ========================================================= */
+
+/* ------------------------------ */
+/*        ROOT VARIABLES          */
+/* ------------------------------ */
+:root {
+    --iota-blue: #1a6fb3;
+    --iota-blue-dark: #0f4a73;
+    --iota-gunmetal: #2b2b2e;
+    --iota-silver: #d7d7d9;
+    --iota-white: #ffffff;
+}
+
+/* ------------------------------ */
+/*             BODY               */
+/* ------------------------------ */
+.iota-body {
+    background: #f4f6f9;
+    font-family: 'Roboto', sans-serif;
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.iota-navbar {
+    background: #ffffff;
+    padding: 12px 0;
+    position: relative;
+    border-bottom: none;
+    z-index: 3000;
+}
+
+/* Metallic gradient strip */
+.iota-navbar::after {
+    content: "";
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: linear-gradient(
+        to bottom,
+        var(--iota-blue),
+        var(--iota-blue-dark),
+        var(--iota-gunmetal)
+    );
+    z-index: 1;
+}
+
+/* WELCOME TEXT */
+.iota-nav-user {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #222;
+    z-index: 5000;
+}
+
+/* NAV LINKS */
+.iota-nav-link {
+    color: #333 !important;
+    font-weight: 500;
+}
+
+.iota-nav-link:hover {
+    color: var(--iota-blue-dark) !important;
+}
+
+/* =========================================================
+   LOGO BELOW THE NAVBAR (BIG + CENTERED)
+   ========================================================= */
+
+.iota-logo-container {
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.iota-logo {
+    height: 180px;
+    max-width: 100%;
+    display: block;
+    margin-left: 20px;      /* move logo to the left */
+    margin-right: 0;
+}
+
+/* Tablet scaling */
+@media (max-width: 992px) {
+    .iota-logo {
+        height: 140px;
+    }
+}
+
+/* Mobile scaling */
+@media (max-width: 576px) {
+    .iota-logo {
+        height: 110px;
+    }
+}
+
+/* =========================================================
+   MENU BUTTON (ALWAYS VISIBLE)
+   ========================================================= */
+
+.iota-menu-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 10000;
+}
+
+.iota-menu-btn i {
+    font-size: 2.4rem;
+    color: var(--iota-blue-dark);
+}
+
+/* =========================================================
+   PAGE WRAPPER + GLASS CARD
+   ========================================================= */
+
+.iota-wrapper {
+    padding: 40px 0;
+}
+
+.iota-content-container {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.iota-glass-card {
+    background: rgba(255, 255, 255, 0.78);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    padding: 32px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* =========================================================
+   OFFCANVAS MENU
+   ========================================================= */
+
+.iota-offcanvas {
+    background: #e9eef4;
+    width: 280px;
+    padding-top: 20px;
+    z-index: 20000 !important;
+}
+
+.iota-offcanvas .nav-link {
+    font-weight: 600;
+    padding: 10px 18px;
+    color: #222;
+}
+
+.iota-offcanvas .nav-link:hover {
+    background: var(--iota-blue);
+    color: #fff !important;
+    border-radius: 6px;
+}
+
+/* =========================================================
+   BUTTONS
+   ========================================================= */
+
+.iota-btn {
+    background: linear-gradient(135deg, var(--iota-blue), var(--iota-blue-dark));
+    color: white !important;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    transition: 0.25s ease-in-out;
+}
+
+.iota-btn:hover {
+    background: linear-gradient(135deg, var(--iota-blue-dark), var(--iota-gunmetal));
+    transform: translateY(-2px);
+}

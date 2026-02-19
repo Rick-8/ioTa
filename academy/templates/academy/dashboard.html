@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block nav_academy_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}Academy Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4">
+
+            <h1 class="mb-2 text-light">Driver Academy</h1>
+            <p class="lead text-light mb-0">
+                Work through each training level and track your progress.
+            </p>
+
+        </div>
+    </div>
+</div>
+
+{% if course_data %}
+    <div class="row justify-content-center g-3">
+        {% for row in course_data %}
+            <div class="col-md-6 col-lg-4">
+                <div class="cozy-dark-glass p-3 h-100 d-flex flex-column">
+
+                    <h5 class="mb-2 text-light">{{ row.course.title }}</h5>
+                    <p class="mb-3 text-light">{{ row.course.description }}</p>
+
+                    <div class="mb-3">
+                        <small class="text-light">
+                            {{ row.completed_modules }} of {{ row.total_modules }} modules completed
+                        </small>
+                        <div class="progress mt-1">
+                            <div class="progress-bar"
+                                 role="progressbar"
+                                 style="width: {{ row.progress_percent }}%;"
+                                 aria-valuenow="{{ row.progress_percent }}"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                {{ row.progress_percent }}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto">
+                        <a href="{% url 'academy_course_detail' row.course.slug %}"
+                           class="btn w-100 fw-bold"
+                           style="background:#800020; border:none; color:white;">
+                            View Course
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% else %}
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="cozy-dark-glass p-4 text-center">
+                <p class="mb-0 text-light">
+                    No courses are available yet. Please check back later.
+                </p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}

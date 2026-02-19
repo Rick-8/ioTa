@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block nav_academy_active %}active{% endblock %}
+{% block title %}Certificate – {{ certificate.course.title }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0 cozy-bg-fixed">
+    <div class="row justify-content-center py-5 px-3">
+        <div class="col-lg-8 col-md-10">
+            <div class="cozy-dark-glass text-center p-5 position-relative"
+                 style="border: 2px solid rgba(128,0,32,0.6); border-radius: 18px; box-shadow: 0 6px 24px rgba(0,0,0,0.35);">
+
+                <!-- Close button -->
+                <a href="javascript:history.back()" class="btn-close btn-close-white position-absolute" 
+                   style="top: 20px; right: 20px;" aria-label="Close"></a>
+
+                <!-- Header -->
+                <div class="mb-4">
+                    <h2 class="fw-bold text-light" style="color: #fff;">Certificate of Completion</h2>
+                    <hr class="border-light opacity-25 w-50 mx-auto">
+                </div>
+
+                <!-- Recipient info -->
+                <p class="text-light mb-1">This is to certify that</p>
+                <h3 class="fw-bold text-light mb-3">
+                    {{ certificate.user.get_full_name|default:certificate.user.username }}
+                </h3>
+
+                <p class="text-light mb-1">has successfully completed</p>
+                <h4 class="fw-semibold text-light mb-3">{{ certificate.course.title }}</h4>
+
+                <p class="text-light mb-1">
+                    Final assessment module:<br>
+                    <strong>{{ certificate.module.title }}</strong>
+                </p>
+                <p class="text-light mb-3">
+                    Score achieved: <strong>{{ certificate.score }}%</strong>
+                </p>
+
+                <!-- Metadata -->
+                <div class="mb-4">
+                    <p class="text-light mb-1">
+                        Issued on: {{ certificate.issued_at|date:"j F Y, H:i" }}
+                    </p>
+                    <p class="text-light mb-1">
+                        Certificate No: <strong>{{ certificate.certificate_number }}</strong>
+                    </p>
+                </div>
+
+                <!-- Action buttons -->
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="{% url 'academy_generate_certificate_pdf' certificate.id %}"
+                       class="btn btn-sm px-4 py-2 text-light"
+                       style="background-color:#800020; border:none; border-radius:8px;">
+                       <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF
+                    </a>
+
+                    <a href="javascript:window.print()" 
+                       class="btn btn-sm btn-outline-light px-4 py-2"
+                       style="border-color:#800020;">
+                       <i class="bi bi-printer-fill"></i> Print
+                    </a>
+                </div>
+
+                <!-- Footer -->
+                <hr class="border-light opacity-25 mt-5">
+                <p class="text-light-50 small mb-0">
+                    Cozy Coaches – Driver Academy<br>
+                    <span style="font-size:0.85rem; color:rgba(255,255,255,0.6);">
+                        © {{ certificate.issued_at|date:"Y" }} Cozy Coaches Ltd. All rights reserved.
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

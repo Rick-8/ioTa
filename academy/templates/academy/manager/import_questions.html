@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Import Questions{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="cozy-dark-glass p-5 rounded-4 shadow-lg">
+
+        <h2 class="text-light mb-4">
+            <i class="fa-solid fa-upload text-warning me-2"></i>
+            Import Questions
+        </h2>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Module Dropdown -->
+            <div class="mb-3">
+                <label class="form-label text-light fw-bold">Select Module</label>
+                <select name="module_id"
+                        class="form-select bg-dark text-light border-secondary"
+                        required>
+                    <option value="">-- Select module --</option>
+                    {% for mod in modules %}
+                    <option value="{{ mod.id }}">{{ mod.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Upload JSON -->
+            <div class="mb-3">
+                <label class="form-label text-light fw-bold">Upload JSON File</label>
+                <input type="file" name="json_file"
+                       accept=".json"
+                       class="form-control bg-dark text-light border-secondary"
+                       required>
+            </div>
+
+            <!-- Delete toggle -->
+            <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" name="delete_existing" id="delete_existing">
+                <label for="delete_existing" class="form-check-label text-light">
+                    Delete existing questions for this module
+                </label>
+            </div>
+
+            <button class="btn btn-success fw-bold w-100 py-2">
+                <i class="fa-solid fa-cloud-arrow-up me-2"></i>
+                Import Questions
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

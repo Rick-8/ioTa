@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Add Module{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center my-5">
+    <div class="col-lg-7">
+        <div class="cozy-dark-glass p-4 rounded-4 shadow-lg">
+
+            <div class="d-flex justify-content-between mb-3">
+                <h2 class="text-light">
+                    <i class="fa-solid fa-layer-group text-info me-2"></i>
+                    Add Module to {{ course.title }}
+                </h2>
+                <a href="{% url 'academy_manage_modules' course.id %}" class="btn btn-outline-light btn-sm">
+                    <i class="fa-solid fa-arrow-left me-1"></i> Back
+                </a>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <!-- MODULE TITLE -->
+                <div class="mb-3">
+                    <label class="form-label text-light fw-bold">Module Title</label>
+                    <input type="text" name="title" class="form-control" required
+                           placeholder="Example: Safety, Driving & Yard Procedures">
+                </div>
+
+                <!-- DESCRIPTION -->
+                <div class="mb-3">
+                    <label class="form-label text-light fw-bold">Description (optional)</label>
+                    <textarea name="description" rows="3" class="form-control"
+                              placeholder="Short summary of what this module covers."></textarea>
+                </div>
+
+                <!-- ORDER -->
+                <div class="mb-3">
+                    <label class="form-label text-light fw-bold">Display Order</label>
+                    <input type="number" name="order" class="form-control" value="1" min="1">
+                </div>
+
+                <button class="btn btn-success w-100 fw-bold py-2">
+                    <i class="fa-solid fa-check me-2"></i> Save Module
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

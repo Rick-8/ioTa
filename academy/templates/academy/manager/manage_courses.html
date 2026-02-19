@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Manage Courses{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+
+    <!-- Glass Panel START -->
+    <div class="cozy-dark-glass p-5 rounded-4 shadow-lg">
+
+        <!-- Header -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="text-light mb-0">
+                <i class="fa-solid fa-graduation-cap me-2 text-warning"></i> Manage Courses
+            </h2>
+
+            <a href="{% url 'academy_manager_tools' %}" class="btn btn-outline-light btn-sm">
+                <i class="fa-solid fa-arrow-left me-2"></i> Back to Tools
+            </a>
+        </div>
+
+        <div class="mb-3">
+            <a href="{% url 'academy_add_course' %}" class="btn btn-success">
+                <i class="fa-solid fa-circle-plus me-2"></i> Add New Course
+            </a>
+        </div>
+
+        <!-- Course List -->
+        <div class="table-responsive">
+            <table class="table table-dark table-striped align-middle">
+                <thead>
+                    <tr class="text-center">
+                        <th>Title</th>
+                        <th>Slug</th>
+                        <th>Description</th>
+                        <th>Modules</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for course in courses %}
+                    <tr class="text-center">
+                        <td>{{ course.title }}</td>
+                        <td>{{ course.slug }}</td>
+                        <td>{{ course.description|truncatechars:60 }}</td>
+                        <td>{{ course.modules.count }}</td>
+
+                        <td>
+                            <div class="btn-group">
+
+                                <!-- Edit (disabled – no edit page yet) -->
+                                <button class="btn btn-warning btn-sm" disabled
+                                        title="Edit Course not available yet">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+
+                                <!-- Manage Modules -->
+                                <a href="{% url 'academy_manage_modules' course.id %}"
+                                   class="btn btn-info btn-sm">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </a>
+
+                                <!-- Delete (opens modal) -->
+                                <button class="btn btn-danger btn-sm"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ course.id }}">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-light py-3">
+                            No courses have been created yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </div>
+    <!-- Glass Panel END -->
+
+</div>
+
+
+<!-- ============================================
+     ALL MODALS MOVED **OUTSIDE** THE GLASS PANEL
+     ============================================ -->
+{% for course in courses %}
+<div class="modal fade" id="deleteModal{{ course.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-light border border-secondary">
+
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title">
+                    <i class="fa-solid fa-trash text-danger me-2"></i>
+                    Delete Course
+                </h5>
+                <button type="button" class="btn-close btn-close-white"
+                        data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>Are you sure you want to delete:</p>
+                <p class="fw-bold text-warning">{{ course.title }}</p>
+                <p>This will remove all modules and lessons inside it.</p>
+            </div>
+
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary"
+                        data-bs-dismiss="modal">Cancel</button>
+                <a href="{% url 'academy_delete_course' course.id %}"
+                   class="btn btn-danger">Delete</a>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

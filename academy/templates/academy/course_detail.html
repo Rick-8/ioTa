@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block nav_academy_active %}active{% endblock %}
+{% load static %}
+
+{% block title %}{{ course.title }} – Academy{% endblock %}
+
+{% block content %}
+
+<!-- Course header panel -->
+<div class="row justify-content-center mb-4">
+    <div class="col-lg-10">
+        <div class="cozy-dark-glass p-4 d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+
+            <div>
+                <a href="{% url 'academy_dashboard' %}"
+                   class="btn btn-sm mb-3"
+                   style="background:#800020; border:none; color:white;">
+                    <i class="fa-solid fa-angle-left"></i> Back to Academy
+                </a>
+
+                <h1 class="mb-2 text-light">{{ course.title }}</h1>
+                <p class="lead mb-0 text-light">
+                    {{ course.description }}
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% if module_rows %}
+    <!-- Modules list -->
+    <div class="row justify-content-center g-3">
+        {% for row in module_rows %}
+            {% with module=row.module progress=row.progress %}
+                <div class="col-lg-10">
+                    <div class="cozy-dark-glass p-3 d-flex flex-column flex-md-row justify-content-between align-items-start gap-3">
+
+                        <!-- Left: module info -->
+                        <div>
+                            <h5 class="mb-1 cozy-text-subtitle">{{ module.title }}</h5>
+                            <p class="mb-2 text-light">{{ module.description }}</p>
+                            <small class="text-light-50">Order: {{ module.order }}</small>
+                        </div>
+
+                        <!-- Right: status + action -->
+                        <div class="text-md-end w-100 w-md-auto">
+
+                            {% if progress %}
+                                {% if progress.passed %}
+                                    <span class="badge bg-success mb-2">Completed</span>
+                                {% elif progress.status == "in_progress" %}
+                                    <span class="badge bg-warning text-dark mb-2">In progress</span>
+                                {% else %}
+                                    <span class="badge bg-secondary mb-2">Not started</span>
+                                {% endif %}
+                            {% else %}
+                                <span class="badge bg-secondary mb-2">Not started</span>
+                            {% endif %}
+
+                            {% if row.can_access %}
+                                <a href="{% url 'academy_module_detail' course.slug module.slug %}"
+                                   class="btn w-100 fw-bold mt-1"
+                                   style="background:#800020; border:none; color:white;">
+                                    {% if progress and progress.status == "in_progress" %}
+                                        Continue
+                                    {% else %}
+                                        Start
+                                    {% endif %}
+                                </a>
+                            {% else %}
+                                <button class="btn btn-outline-light w-100 mt-1" disabled>
+                                    Locked
+                                </button>
+                                <small class="d-block text-light-50 mt-1">
+                                    Complete previous modules first
+                                </small>
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+                </div>
+            {% endwith %}
+        {% endfor %}
+    </div>
+
+{% else %}
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="cozy-dark-glass p-4 text-center">
+                <p class="mb-0 text-light">
+                    No modules found for this course yet.
+                </p>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock %}
