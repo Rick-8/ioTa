@@ -171,29 +171,76 @@ MEDIA_ROOT = BASE_DIR / "media"
 # CKEditor 5 (django-ckeditor-5)
 CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
 
+# CKEditor 5 (django-ckeditor-5)
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
+
 CKEDITOR_5_CONFIGS = {
     "default": {
         "toolbar": {
             "items": [
                 "heading", "|",
-                "bold", "italic", "link",
-                "bulletedList", "numberedList", "blockQuote",
+                "bold", "italic", "link", "|",
+                "bulletedList", "numberedList", "|",
+                "blockQuote", "undo", "redo",
             ],
+            "shouldNotGroupWhenFull": True,
         },
     },
+
     "extends": {
         "toolbar": {
             "items": [
+                # Structure
                 "heading", "|",
-                "outdent", "indent", "|",
-                "bold", "italic", "underline", "strikethrough", "|",
-                "link", "blockQuote", "|",
+
+                # Core formatting
+                "bold", "italic", "underline", "strikethrough", "subscript", "superscript", "|",
+
+                # Typography
+                "fontSize", "fontFamily",
+                "fontColor", "fontBackgroundColor", "|",
+
+                # Alignment / layout
+                "alignment", "|",
+
+                # Links + media
+                "link", "mediaEmbed", "|",
+
+                # Lists + indentation
                 "bulletedList", "numberedList", "todoList", "|",
-                "insertTable", "mediaEmbed", "|",
-                "fontSize", "fontFamily", "fontColor", "fontBackgroundColor", "|",
-                "removeFormat", "sourceEditing",
+                "outdent", "indent", "|",
+
+                # Inserts
+                "insertTable", "horizontalLine", "specialCharacters", "|",
+
+                # Blocks
+                "blockQuote", "code", "codeBlock", "|",
+
+                # Editing tools
+                "removeFormat", "findAndReplace", "|",
+                "undo", "redo", "|",
+
+                # Power tools
+                "sourceEditing",
             ],
-            "shouldNotGroupWhenFull": "true",
+            "shouldNotGroupWhenFull": True,
+        },
+
+        # Optional but useful for content teams
+        "table": {
+            "contentToolbar": [
+                "tableColumn", "tableRow", "mergeTableCells",
+                "tableProperties", "tableCellProperties",
+            ]
+        },
+
+        "heading": {
+            "options": [
+                {"model": "paragraph", "title": "Paragraph", "class": "ck-heading_paragraph"},
+                {"model": "heading1", "view": "h2", "title": "Heading", "class": "ck-heading_heading1"},
+                {"model": "heading2", "view": "h3", "title": "Subheading", "class": "ck-heading_heading2"},
+                {"model": "heading3", "view": "h4", "title": "Section title", "class": "ck-heading_heading3"},
+            ]
         },
     },
 }

@@ -4,54 +4,84 @@
 {% block title %}{{ story.title }}{% endblock %}
 
 {% block news_content %}
-<section class="news-wrap">
+<section class="news-wrap news-article-page">
 
-  <div class="news-breadcrumb">
+  <nav class="news-breadcrumb" aria-label="Breadcrumb">
     <a class="news-breadcrumb__link" href="{% url 'news_list' %}">← Back to News</a>
-  </div>
+  </nav>
 
   <div class="news-article-layout">
 
-    <article class="news-article">
+    <article class="news-article" aria-label="News article">
+
       <header class="news-article__head">
-        <div class="news-article__badges">
-          {% if story.is_breaking %}<span class="news-pill news-pill-breaking">BREAKING</span>{% endif %}
-          {% if story.is_archived %}<span class="news-pill news-pill-archived">ARCHIVED</span>{% endif %}
+
+        <div class="news-article__badges" aria-label="Story badges">
+          {% if story.is_breaking %}
+            <span class="news-pill news-pill-breaking">BREAKING</span>
+          {% endif %}
+          {% if story.is_archived %}
+            <span class="news-pill news-pill-archived">ARCHIVED</span>
+          {% endif %}
         </div>
 
         <h1 class="news-article__title">{{ story.title }}</h1>
 
-        <div class="news-meta">
-          <span>Published: {{ story.created_at|date:"D d M Y, H:i" }}</span>
+        {% if story.synopsis %}
+          <p class="news-standfirst">{{ story.synopsis }}</p>
+        {% endif %}
+
+        <div class="news-meta" aria-label="Story metadata">
+          <span class="news-meta__item">
+            <span class="news-meta__label">Published</span>
+            <time datetime="{{ story.created_at|date:'c' }}">{{ story.created_at|date:"D d M Y, H:i" }}</time>
+          </span>
+
           {% if story.updated_at != story.created_at %}
-            <span>Updated: {{ story.updated_at|date:"D d M Y, H:i" }}</span>
+            <span class="news-meta__dot" aria-hidden="true">•</span>
+            <span class="news-meta__item">
+              <span class="news-meta__label">Updated</span>
+              <time datetime="{{ story.updated_at|date:'c' }}">{{ story.updated_at|date:"D d M Y, H:i" }}</time>
+            </span>
           {% endif %}
         </div>
       </header>
 
       {% if story.image %}
-        <div class="news-article__hero" style="background-image:url('{{ story.image.url }}')"></div>
+        <figure class="news-article__hero"
+                role="img"
+                aria-label="Story image"
+                style="background-image:url('{{ story.image.url }}')">
+        </figure>
       {% endif %}
 
       <div class="news-article__body ck-content">
         {{ story.body|safe }}
       </div>
+
     </article>
 
     {% if user.is_superuser %}
-      <aside class="news-panel">
+      <aside class="news-panel" aria-label="Management panel">
+
         <div class="news-panel__top">
           <h2 class="news-panel__title">Management</h2>
-          <button class="news-btn news-btn--subtle news-btn--small" type="button"
-                  data-modal-open="news-edit-modal">
+          <button class="news-btn news-btn--subtle news-btn--small"
+                  type="button"
+                  data-modal-open="news-edit-modal"
+                  aria-haspopup="dialog"
+                  aria-controls="news-edit-modal">
             Edit
           </button>
         </div>
 
         <div class="news-panel__actions">
+
           <form method="post" action="{% url 'news_set_breaking' story.slug %}">
             {% csrf_token %}
-            <button class="news-btn news-btn--tiny" type="submit">Set Breaking</button>
+            <button class="news-btn news-btn--tiny" type="submit">
+              Set Breaking
+            </button>
           </form>
 
           <form method="post" action="{% url 'news_toggle_archive' story.slug %}">
@@ -61,12 +91,21 @@
             </button>
           </form>
 
-          <form method="post" action="{% url 'news_delete' story.slug %}"
+          <form method="post"
+                action="{% url 'news_delete' story.slug %}"
                 onsubmit="return confirm('Delete this story permanently?');">
             {% csrf_token %}
-            <button class="news-btn news-btn--tiny news-btn-danger" type="submit">Delete</button>
+            <button class="news-btn news-btn--tiny news-btn-danger" type="submit">
+              Delete
+            </button>
           </form>
+
         </div>
+
+        <div class="news-panel__note">
+          <strong>Tip:</strong> Use the synopsis as a short standfirst for the story summary.
+        </div>
+
       </aside>
     {% endif %}
 
@@ -79,6 +118,12 @@
     <div class="news-modal__backdrop" data-modal-close></div>
 
     <div class="news-modal__dialog" role="dialog" aria-modal="true" aria-label="Edit story">
+
+      {# Resize handles (sides + corner) #}
+      <div class="news-resize news-resize--left" aria-hidden="true"></div>
+      <div class="news-resize news-resize--right" aria-hidden="true"></div>
+      <div class="news-resize news-resize--corner" aria-hidden="true"></div>
+
       <div class="news-modal__head">
         <div>
           <h2 class="news-modal__title">Edit story</h2>
@@ -87,7 +132,9 @@
         <button class="news-modal__x" type="button" data-modal-close aria-label="Close">✕</button>
       </div>
 
-      <form method="post" action="{% url 'news_edit' story.slug %}" enctype="multipart/form-data"
+      <form method="post"
+            action="{% url 'news_edit' story.slug %}"
+            enctype="multipart/form-data"
             class="news-form news-modal__body">
         {% csrf_token %}
         {{ edit_form.non_field_errors }}
@@ -140,7 +187,6 @@
     </div>
   </div>
 
-  {# REQUIRED: loads CKEditor 5 JS/CSS for the widget #}
   {{ edit_form.media }}
 {% endif %}
 
@@ -148,11 +194,47 @@
 (function () {
   const body = document.body;
 
+  function clamp(n, min, max) {
+    if (max < min) return min;
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function toPixels(dialog) {
+    // Convert from left:50% + transform to pixel left/top once.
+    const rect = dialog.getBoundingClientRect();
+    dialog.style.transform = "none";
+    dialog.style.left = rect.left + "px";
+    dialog.style.top = rect.top + "px";
+  }
+
+  function keepOnScreen(dialog) {
+    const margin = 8;
+    const rect = dialog.getBoundingClientRect();
+
+    const maxLeft = window.innerWidth - rect.width - margin;
+    const maxTop = window.innerHeight - rect.height - margin;
+
+    const left = parseFloat(dialog.style.left || rect.left);
+    const top = parseFloat(dialog.style.top || rect.top);
+
+    dialog.style.left = clamp(left, margin, maxLeft) + "px";
+    dialog.style.top = clamp(top, margin, maxTop) + "px";
+  }
+
   function openModal(modal) {
     if (!modal) return;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     body.classList.add("news-modal-open");
+
+    const dialog = modal.querySelector(".news-modal__dialog");
+    if (dialog) {
+      dialog.style.left = "50%";
+      dialog.style.top = "6vh";
+      dialog.style.transform = "translateX(-50%)";
+      dialog.style.width = "";
+      dialog.style.height = "";
+    }
 
     const focusEl = modal.querySelector("input, textarea, select, button");
     if (focusEl) focusEl.focus();
@@ -168,22 +250,184 @@
   document.addEventListener("click", (e) => {
     const openBtn = e.target.closest("[data-modal-open]");
     if (openBtn) {
-      const id = openBtn.getAttribute("data-modal-open");
-      openModal(document.getElementById(id));
+      openModal(document.getElementById(openBtn.getAttribute("data-modal-open")));
       return;
     }
-
     const closeBtn = e.target.closest("[data-modal-close]");
-    if (closeBtn) {
-      const modal = e.target.closest(".news-modal");
-      closeModal(modal);
-    }
+    if (closeBtn) closeModal(e.target.closest(".news-modal"));
   });
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
     const modal = document.querySelector(".news-modal.is-open");
     if (modal) closeModal(modal);
+  });
+
+  // ---------------------------
+  // Drag + Resize state
+  // ---------------------------
+  let state = null;
+
+  function isInteractive(el) {
+    return !!el.closest("input, textarea, select, button, a, .ck, .ck-editor, [contenteditable='true']");
+  }
+
+  function startDrag(dialog, evt) {
+    if (isInteractive(evt.target)) return;
+
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    toPixels(dialog);
+    keepOnScreen(dialog);
+
+    const rect = dialog.getBoundingClientRect();
+    state = {
+      type: "drag",
+      dialog,
+      startX: evt.clientX,
+      startY: evt.clientY,
+      startLeft: rect.left,
+      startTop: rect.top
+    };
+
+    dialog.setPointerCapture(evt.pointerId);
+  }
+
+  function startResize(dialog, mode, evt) {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    toPixels(dialog);
+    keepOnScreen(dialog);
+
+    const rect = dialog.getBoundingClientRect();
+    state = {
+      type: "resize",
+      mode,
+      dialog,
+      startX: evt.clientX,
+      startY: evt.clientY,
+      startLeft: rect.left,
+      startTop: rect.top,
+      startW: rect.width,
+      startH: rect.height
+    };
+
+    dialog.setPointerCapture(evt.pointerId);
+  }
+
+  function onMove(evt) {
+    if (!state) return;
+
+    const dialog = state.dialog;
+    const margin = 8;
+    const minW = 420;
+    const minH = 380;
+
+    if (state.type === "drag") {
+      const dx = evt.clientX - state.startX;
+      const dy = evt.clientY - state.startY;
+
+      // Clamp using current rect size
+      const rect = dialog.getBoundingClientRect();
+      const maxLeft = window.innerWidth - rect.width - margin;
+      const maxTop = window.innerHeight - rect.height - margin;
+
+      dialog.style.left = clamp(state.startLeft + dx, margin, maxLeft) + "px";
+      dialog.style.top = clamp(state.startTop + dy, margin, maxTop) + "px";
+      return;
+    }
+
+    if (state.type === "resize") {
+      const dx = evt.clientX - state.startX;
+      const dy = evt.clientY - state.startY;
+
+      const leftNow = parseFloat(dialog.style.left || state.startLeft);
+      const topNow = parseFloat(dialog.style.top || state.startTop);
+
+      if (state.mode === "right") {
+        const newW = Math.max(minW, state.startW + dx);
+        const maxW = window.innerWidth - leftNow - margin;
+        dialog.style.width = clamp(newW, minW, maxW) + "px";
+      }
+
+      if (state.mode === "left") {
+        // Left edge: adjust left + width
+        const rawLeft = state.startLeft + dx;
+        const rightEdge = state.startLeft + state.startW;
+
+        const clampedLeft = clamp(rawLeft, margin, rightEdge - minW);
+        const newW = Math.max(minW, rightEdge - clampedLeft);
+
+        dialog.style.left = clampedLeft + "px";
+
+        const maxW = window.innerWidth - clampedLeft - margin;
+        dialog.style.width = clamp(newW, minW, maxW) + "px";
+      }
+
+      if (state.mode === "corner") {
+        const newW = Math.max(minW, state.startW + dx);
+        const newH = Math.max(minH, state.startH + dy);
+
+        const maxW = window.innerWidth - leftNow - margin;
+        const maxH = window.innerHeight - topNow - margin;
+
+        dialog.style.width = clamp(newW, minW, maxW) + "px";
+        dialog.style.height = clamp(newH, minH, maxH) + "px";
+      }
+
+      // Safety: never allow it to drift off-screen during resize
+      keepOnScreen(dialog);
+    }
+  }
+
+  function onEnd(evt) {
+    if (!state) return;
+    try { state.dialog.releasePointerCapture(evt.pointerId); } catch (e) {}
+    keepOnScreen(state.dialog);
+    state = null;
+  }
+
+  document.addEventListener("pointermove", onMove, { passive: false });
+  document.addEventListener("pointerup", onEnd);
+  document.addEventListener("pointercancel", onEnd);
+
+  document.addEventListener("pointerdown", (evt) => {
+    // Only primary button
+    if (evt.button !== 0) return;
+
+    const modal = evt.target.closest(".news-modal.is-open");
+    if (!modal) return;
+
+    const dialog = modal.querySelector(".news-modal__dialog");
+    if (!dialog) return;
+
+    // Resize handles first (prevents “jump + drag”)
+    if (evt.target.closest(".news-resize--left")) return startResize(dialog, "left", evt);
+    if (evt.target.closest(".news-resize--right")) return startResize(dialog, "right", evt);
+    if (evt.target.closest(".news-resize--corner")) return startResize(dialog, "corner", evt);
+
+    // Drag only by header
+    if (evt.target.closest(".news-modal__head")) return startDrag(dialog, evt);
+  });
+
+  // Double-click header = reset centre + size
+  document.addEventListener("dblclick", (e) => {
+    const header = e.target.closest(".news-modal__head");
+    if (!header) return;
+
+    const modal = e.target.closest(".news-modal");
+    if (!modal) return;
+
+    const dialog = modal.querySelector(".news-modal__dialog");
+    if (!dialog) return;
+
+    dialog.style.left = "50%";
+    dialog.style.top = "6vh";
+    dialog.style.transform = "translateX(-50%)";
+    dialog.style.width = "";
+    dialog.style.height = "";
   });
 })();
 </script>
