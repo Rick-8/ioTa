@@ -23,6 +23,14 @@ function getCookie(name) {
     return cookieValue;
 }
 
+function getCSRFToken(cookieName) {
+    let token = getCookie(cookieName);
+    if (!token) {
+        token = document.querySelector('input[name=csrfmiddlewaretoken]')?.value;
+    }
+    return token;
+}
+
 /**
  * Checks whether the element or its children match the query and returns
  * an array with the matches.
@@ -81,13 +89,20 @@ function createEditors(element = document.body) {
                    var regex = new RegExp(match[1], match[2]);
                    return regex;
                 }
+                if (typeof value === 'string' && value.startsWith('callback:')) {
+                    var callbackName = value.substring(9);
+                    var callback = window[callbackName];
+                    if (typeof callback === 'function') {
+                        return callback;
+                    }
+                }
                 return value;
             }
         );
         config.simpleUpload = {
             'uploadUrl': upload_url,
             'headers': {
-                'X-CSRFToken': getCookie(csrf_cookie_name),
+                'X-CSRFToken': getCSRFToken(csrf_cookie_name),
             },
         };
 
@@ -110,7 +125,7 @@ function createEditors(element = document.body) {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
-                                'X-CSRFToken': getCookie(csrf_cookie_name),
+                                'X-CSRFToken': getCSRFToken(csrf_cookie_name),
                             },
                             body: JSON.stringify({
                                 id: editorEl.id,
@@ -142,6 +157,9 @@ function createEditors(element = document.body) {
                 const wordCountWrapper = element.querySelector(`#${script_id}-word-count`);
                 wordCountWrapper.innerHTML = '';
                 wordCountWrapper.appendChild(wordCountPlugin.wordCountContainer);
+            }
+            if (editorEl.hasAttribute('disabled')) {
+                editor.enableReadOnlyMode('django-ckeditor-5');
             }
             editors[editorEl.id] = editor;
             if (callbacks[editorEl.id]) {

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Shop{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'shop/shop.css' %}">
+{% endblock %}
+
+{% block iota_content %}
+
+<section class="shop-wrapper">
+
+    <!-- Hero Header -->
+    <div class="shop-hero">
+        <div class="shop-hero__overlay"></div>
+        <div class="shop-hero__content">
+            <h1 class="shop-title">IOTA Shop</h1>
+            <p class="shop-subtitle">Premium Resources & Tools</p>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="shop-container">
+        {% block shop_content %}
+        {% endblock %}
+    </div>
+
+</section>
+
+{% endblock %}

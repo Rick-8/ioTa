@@ -10,6 +10,8 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("academy/", include("academy.urls")),
     path("news/", include("news.urls")),
+    path("shop/", include("shop.urls", namespace="shop")),
+
     # CKEditor 5 (required for upload endpoint + related routes)
     path("ckeditor5/", include("django_ckeditor_5.urls")),
 ]

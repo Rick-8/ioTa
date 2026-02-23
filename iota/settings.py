@@ -50,6 +50,9 @@ INSTALLED_APPS = [
     "home",
     "academy",
     "news",
+    "shop",
+
+    # third-party
     "django_ckeditor_5",
 ]
 
