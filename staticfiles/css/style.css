@@ -1,13 +1,15 @@
 /* =========================================================
    IOTA Global Style Sheet (Full)
    - Solid line at top of navbar
-   - Borderless deep blue glass navbar
+   - Borderless deep blue sculpted glass navbar (gloss + chisel edge)
    - Large logo with white outline, absolute overlap
    - Hero image sits under navbar
    ========================================================= */
 
 :root{
   --iota-blue-line: #0a66ff;
+
+  /* Base glass (kept for other components) */
   --iota-glass: rgba(0, 24, 60, 0.72);
 
   --iota-text: rgba(255,255,255,0.92);
@@ -31,7 +33,22 @@
   /* Logo */
   --logo-h: 120px;              /* bigger logo */
   --logo-top: 34px;             /* how high it sits in header */
-  --hero-top-pad: 150px;         /* pushes hero text down so logo never overlaps it */
+  --hero-top-pad: 150px;        /* pushes hero text down so logo never overlaps it */
+
+  /* =========================================================
+     NAV: Deep blue sculpted glass tuning knobs
+     (Adjust these to get “right amount of see-through”)
+     ========================================================= */
+  --nav-glass-tint-top: rgba(5, 22, 55, 0.78);
+  --nav-glass-tint-mid: rgba(3, 18, 48, 0.70);
+  --nav-glass-tint-bot: rgba(2, 14, 40, 0.66);
+
+  --nav-glass-blur: 22px;
+
+  /* Readability controls */
+  --nav-text-shadow: 0 2px 10px rgba(0,0,0,0.55);
+  --nav-link-bg: rgba(255,255,255,0.06);
+  --nav-link-bg-hover: rgba(255,255,255,0.12);
 }
 
 /* BODY */
@@ -58,14 +75,66 @@
   background: linear-gradient(90deg, var(--iota-blue-line), #2aa7ff, var(--iota-blue-line));
 }
 
-/* Glass navbar, borderless */
+/* =========================================================
+   Sculpted deep-blue glass navbar (borderless, glossy)
+   ========================================================= */
 .iota-navbar{
-  background: var(--iota-glass);
-  backdrop-filter: blur(var(--iota-blur));
-  -webkit-backdrop-filter: blur(var(--iota-blur));
+  position: relative;  /* for gloss layers */
+  isolation: isolate;  /* contain blend layers */
+  min-height: var(--navbar-h);
+
+  /* Deep blue tint with depth */
+  background:
+    linear-gradient(
+      180deg,
+      var(--nav-glass-tint-top) 0%,
+      var(--nav-glass-tint-mid) 45%,
+      var(--nav-glass-tint-bot) 100%
+    ) !important;
+
+  backdrop-filter: blur(var(--nav-glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--nav-glass-blur)) saturate(140%);
+
   border: none !important;
   box-shadow: none !important;
-  min-height: var(--navbar-h);
+}
+
+/* Gloss reflection */
+.iota-navbar::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(900px 140px at 50% 0%,
+      rgba(255,255,255,0.22),
+      rgba(255,255,255,0.08) 40%,
+      transparent 70%
+    ),
+    linear-gradient(180deg,
+      rgba(255,255,255,0.10),
+      transparent 55%
+    );
+
+  mix-blend-mode: screen;
+  opacity: 0.65;
+}
+
+/* Chiselled edge illusion (no hard border lines) */
+.iota-navbar::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    inset 0 -1px 0 rgba(0,0,0,0.22),
+    inset 0 14px 28px rgba(0,0,0,0.18);
+
+  opacity: 1;
 }
 
 .iota-navbar .container-fluid{
@@ -79,9 +148,10 @@
   font-weight: 800;
   letter-spacing: 0.2px;
   white-space: nowrap;
+  text-shadow: var(--nav-text-shadow);
 }
 
-/* Nav links */
+/* Nav links (tiny glass tiles so content never vanishes over busy pages) */
 .iota-nav-link{
   color: var(--iota-text) !important;
   font-weight: 900;
@@ -89,18 +159,28 @@
   padding: 10px 12px !important;
   border-radius: 12px;
   text-decoration: none;
+
+  text-shadow: var(--nav-text-shadow);
+
+  background: var(--nav-link-bg);
+  border: 1px solid rgba(255,255,255,0.08); /* soft specular rim, not a hard border */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .iota-nav-link:hover{
-  background: rgba(255,255,255,0.10);
+  background: var(--nav-link-bg-hover);
+  border-color: rgba(255,255,255,0.14);
   color: #ffffff !important;
 }
 
 /* Navbar toggler for dark glass */
 .iota-toggler{
-  border: 1px solid rgba(255,255,255,0.22) !important;
+  background: rgba(255,255,255,0.06) !important;
+  border: 1px solid rgba(255,255,255,0.16) !important;
   border-radius: 14px;
   padding: 8px 10px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);
 }
 .navbar-toggler-icon{
   filter: invert(1);
@@ -365,7 +445,6 @@
   }
 }
 
-
 /* =========================================================
    LIGHTER, HIGH-GLOSS GLASS OFFCANVAS
    ========================================================= */
@@ -620,7 +699,6 @@
 
 /* =========================================================
    SEAMLESS AUTH PANEL (NO BORDERS, NO LINES, ONE MODULE)
-   Paste at END of style.css
    ========================================================= */
 
 /* Keep your site background blue (ensures no “white edges” behind panel) */
@@ -725,4 +803,20 @@
 /* Mobile */
 @media (max-width: 576px){
   .iota-seamless-body{ padding: 24px 20px 28px; }
+}
+
+/* =========================================================
+   GLOBAL: ensure News modals always sit above header/logo/offcanvas
+   ========================================================= */
+.news-modal{
+  z-index: 2147483647 !important;
+}
+
+.news-modal-open .iota-header,
+.news-modal-open .iota-logo-floating,
+.news-modal-open .iota-offcanvas,
+.news-modal-open .offcanvas,
+.news-modal-open .navbar{
+  z-index: 1 !important;
+  pointer-events: none !important;
 }

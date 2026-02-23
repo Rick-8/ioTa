@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'news/css/news.css' %}">
+{% endblock %}
+
+{# Optional: set a sensible default title, child templates can override #}
+{% block title %}News{% endblock %}
+
+{% block iota_content %}
+  {% block news_content %}{% endblock %}
+{% endblock %}

@@ -16,6 +16,9 @@
   <!-- Styles -->
   <link href="{% static 'css/style.css' %}" rel="stylesheet" />
 
+  <!-- App Css -->
+  {% block extra_css %}{% endblock %}
+
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}" />
 </head>
@@ -63,7 +66,7 @@
             </li>
 
             <li class="nav-item">
-              <a class="nav-link iota-nav-link" href="#">News</a>
+              <a class="nav-link iota-nav-link" href="{% url 'news_list' %}">News</a>
             </li>
             {% if user.is_authenticated %}
             <li class="nav-item">

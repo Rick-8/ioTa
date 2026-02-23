@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # -----------------------------------------------------------
 SECRET_KEY = os.environ.get("SECRET_KEY")
 DEBUG = os.environ.get("DEVELOPMENT", "False") == "True"
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1"]
 
 
 # -----------------------------------------------------------
@@ -46,10 +46,11 @@ INSTALLED_APPS = [
     "allauth.account",
     "allauth.socialaccount",
 
-    # Your apps (add later as created)
+    # apps
     "home",
     "academy",
-    # "accounts",
+    "news",
+    "django_ckeditor_5",
 ]
 
 SITE_ID = 1
@@ -166,6 +167,36 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+
+# CKEditor 5 (django-ckeditor-5)
+CKEDITOR_5_FILE_UPLOAD_PERMISSION = "staff"
+
+CKEDITOR_5_CONFIGS = {
+    "default": {
+        "toolbar": {
+            "items": [
+                "heading", "|",
+                "bold", "italic", "link",
+                "bulletedList", "numberedList", "blockQuote",
+            ],
+        },
+    },
+    "extends": {
+        "toolbar": {
+            "items": [
+                "heading", "|",
+                "outdent", "indent", "|",
+                "bold", "italic", "underline", "strikethrough", "|",
+                "link", "blockQuote", "|",
+                "bulletedList", "numberedList", "todoList", "|",
+                "insertTable", "mediaEmbed", "|",
+                "fontSize", "fontFamily", "fontColor", "fontBackgroundColor", "|",
+                "removeFormat", "sourceEditing",
+            ],
+            "shouldNotGroupWhenFull": "true",
+        },
+    },
+}
 
 # -----------------------------------------------------------
 # DEFAULT PRIMARY KEY

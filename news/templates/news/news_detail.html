@@ -1,0 +1,190 @@
+{% extends "news/news_base.html" %}
+{% load static %}
+
+{% block title %}{{ story.title }}{% endblock %}
+
+{% block news_content %}
+<section class="news-wrap">
+
+  <div class="news-breadcrumb">
+    <a class="news-breadcrumb__link" href="{% url 'news_list' %}">← Back to News</a>
+  </div>
+
+  <div class="news-article-layout">
+
+    <article class="news-article">
+      <header class="news-article__head">
+        <div class="news-article__badges">
+          {% if story.is_breaking %}<span class="news-pill news-pill-breaking">BREAKING</span>{% endif %}
+          {% if story.is_archived %}<span class="news-pill news-pill-archived">ARCHIVED</span>{% endif %}
+        </div>
+
+        <h1 class="news-article__title">{{ story.title }}</h1>
+
+        <div class="news-meta">
+          <span>Published: {{ story.created_at|date:"D d M Y, H:i" }}</span>
+          {% if story.updated_at != story.created_at %}
+            <span>Updated: {{ story.updated_at|date:"D d M Y, H:i" }}</span>
+          {% endif %}
+        </div>
+      </header>
+
+      {% if story.image %}
+        <div class="news-article__hero" style="background-image:url('{{ story.image.url }}')"></div>
+      {% endif %}
+
+      <div class="news-article__body ck-content">
+        {{ story.body|safe }}
+      </div>
+    </article>
+
+    {% if user.is_superuser %}
+      <aside class="news-panel">
+        <div class="news-panel__top">
+          <h2 class="news-panel__title">Management</h2>
+          <button class="news-btn news-btn--subtle news-btn--small" type="button"
+                  data-modal-open="news-edit-modal">
+            Edit
+          </button>
+        </div>
+
+        <div class="news-panel__actions">
+          <form method="post" action="{% url 'news_set_breaking' story.slug %}">
+            {% csrf_token %}
+            <button class="news-btn news-btn--tiny" type="submit">Set Breaking</button>
+          </form>
+
+          <form method="post" action="{% url 'news_toggle_archive' story.slug %}">
+            {% csrf_token %}
+            <button class="news-btn news-btn--tiny" type="submit">
+              {% if story.is_archived %}Unarchive{% else %}Archive{% endif %}
+            </button>
+          </form>
+
+          <form method="post" action="{% url 'news_delete' story.slug %}"
+                onsubmit="return confirm('Delete this story permanently?');">
+            {% csrf_token %}
+            <button class="news-btn news-btn--tiny news-btn-danger" type="submit">Delete</button>
+          </form>
+        </div>
+      </aside>
+    {% endif %}
+
+  </div>
+</section>
+
+{% if user.is_superuser %}
+  <!-- EDIT MODAL -->
+  <div id="news-edit-modal" class="news-modal" aria-hidden="true">
+    <div class="news-modal__backdrop" data-modal-close></div>
+
+    <div class="news-modal__dialog" role="dialog" aria-modal="true" aria-label="Edit story">
+      <div class="news-modal__head">
+        <div>
+          <h2 class="news-modal__title">Edit story</h2>
+          <div class="news-modal__sub">Update headline, image and content. Changes apply immediately.</div>
+        </div>
+        <button class="news-modal__x" type="button" data-modal-close aria-label="Close">✕</button>
+      </div>
+
+      <form method="post" action="{% url 'news_edit' story.slug %}" enctype="multipart/form-data"
+            class="news-form news-modal__body">
+        {% csrf_token %}
+        {{ edit_form.non_field_errors }}
+
+        <div class="news-formgrid">
+          <div class="news-field">
+            <label class="news-label">Title</label>
+            {{ edit_form.title }}
+            {{ edit_form.title.errors }}
+          </div>
+
+          <div class="news-field">
+            <label class="news-label">Image</label>
+            {{ edit_form.image }}
+            {{ edit_form.image.errors }}
+            <div class="news-hint">
+              {% if story.image %}Current image is used unless you upload a new one.{% else %}No image set yet.{% endif %}
+            </div>
+          </div>
+
+          <div class="news-field news-field--full">
+            <label class="news-label">Synopsis</label>
+            {{ edit_form.synopsis }}
+            {{ edit_form.synopsis.errors }}
+          </div>
+
+          <div class="news-field news-field--full">
+            <label class="news-label">Full story</label>
+            {{ edit_form.body }}
+            {{ edit_form.body.errors }}
+          </div>
+
+          <div class="news-field news-field--full news-switches">
+            <label class="news-switch">
+              {{ edit_form.is_breaking }} <span>Breaking</span>
+            </label>
+            {{ edit_form.is_breaking.errors }}
+
+            <label class="news-switch">
+              {{ edit_form.is_archived }} <span>Archived</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="news-modal__foot">
+          <button class="news-btn news-btn--subtle" type="button" data-modal-close>Cancel</button>
+          <button class="news-btn news-btn-primary" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {# REQUIRED: loads CKEditor 5 JS/CSS for the widget #}
+  {{ edit_form.media }}
+{% endif %}
+
+<script>
+(function () {
+  const body = document.body;
+
+  function openModal(modal) {
+    if (!modal) return;
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    body.classList.add("news-modal-open");
+
+    const focusEl = modal.querySelector("input, textarea, select, button");
+    if (focusEl) focusEl.focus();
+  }
+
+  function closeModal(modal) {
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+    body.classList.remove("news-modal-open");
+  }
+
+  document.addEventListener("click", (e) => {
+    const openBtn = e.target.closest("[data-modal-open]");
+    if (openBtn) {
+      const id = openBtn.getAttribute("data-modal-open");
+      openModal(document.getElementById(id));
+      return;
+    }
+
+    const closeBtn = e.target.closest("[data-modal-close]");
+    if (closeBtn) {
+      const modal = e.target.closest(".news-modal");
+      closeModal(modal);
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const modal = document.querySelector(".news-modal.is-open");
+    if (modal) closeModal(modal);
+  });
+})();
+</script>
+{% endblock %}
